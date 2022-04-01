@@ -1,106 +1,137 @@
-options {
-  IGNORE_CASE = false;
-  STATIC = false;
-}
 
 PARSER_BEGIN(Gramatica)
-/** Analizador de expresiones aritmeticas sencillas. */
-package Analizador; 
-public class Gramatica {
-}
-PARSER_END(Gramatica)
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
-/** Lexico */
-SKIP : {
-      " "
-    | "\t"
-    | "\r"
-    | "\n"
+class Gramatica{
+
+    public static void main(String[] args )  throws ParseException, FileNotFoundException {
+    
+        try{
+            Gramatica analizador = new Gramatica(new BufferedReader(new FileReader("./entrada.txt")));
+            analizador.Programa();
+            System.out.println("\tAnalizador ha terminado");
+        }
+        
+        catch(ParseException e){
+            
+            System.out.println(e.getMessage());
+            System.out.println("\tAnalizador ha terminado");
+        }
+    }
 }
 
-TOKEN : {
-      <NUMERO: (["0"-"9"])+>
-    | <DECIMAL: (["0"-"9"])+"."(["0"-"9"])+>
-    | <EVALUAR: "Evaluar">
-    | <PCOMA: ";">
-    | <PARENI: "(">
-    | <PAREND: ")">
-    | <CORI: "[">
-    | <CORD: "]">
-    | <MAS: "+">
-    | <MENOS: "-">
-    | <POR: "*">
-    | <DIV: "/">
-}
-/** Fin Lexico */
 
-/** Producción inicial 
-    Analizar -> (Instruccion)+ EOF
-*/
-void Analizar() :
+PARSER_END (Gramatica)
+
+
+//OPERADORES ARITMETICOS
+TOKEN : 
+{
+    <ASIGNACION : "=">          //1
+    |<MAS : "+">                //2
+    |<MENOS : "-">              //3
+    |<MULTIPLICAR : "*">        //4 
+    |<DIVIDIR : "/">            //5
+    |<INCR : "++">              //6
+    |<DECR : "--">              //7
+    |<MODULO : "%">             //8
+    |<SUMAIGUAL : "+=">         //9
+    |<RESTAIGUAL : "-=">        //10
+    |<MULTIGUAL : "*=">         //11
+    |<DIVIDIRIGUAL : "/=">      //12
+    |<MODULOIGUAL : "%=">       //13
+}
+
+//PALABRAS RESERVADAS
+TOKEN : 
+{
+    <VOID : "vacio">            //14
+    | <MAIN : "principal">      //15
+    | <WRITE : "imprimir">      //16
+    | <READ : "leer">           //17
+    | <IF : "cuando">           //18
+    | <ELSE : "sino">           //19
+    | <ELSEIF : "sino_cuando">  //20
+    | <RETURN : "retorno">      //21
+    | <BREAK : "romper">        //22
+    | <FOR : "ciclo_for">       //23
+    | <WHILE : "ciclo_mientras">//24
+}
+
+//CARACTERES ESPECIALES
+TOKEN :
+{
+    <PARI : "(">                //25
+    | <PARD : ")">              //26
+    | <LLAVEI : "{">            //27
+    | <LLAVED : "}">            //28
+    | <DELIMITER : ";">         //29
+    | <COMA : ",">              //30
+    | <COMILLA : "\"">          //31
+    | <COMENTARIO : "#">        //32
+    | <PUNTO : ".">             //33
+}
+
+
+//OPERADORES LOGICOS
+TOKEN : 
+{
+    <IGUALDAD : "==">           //34
+    | <MAYOR : ">">             //35
+    | <MAYORI : ">=">           //36
+    | <MENOR : "<">             //37
+    | <MENORI : "<=">           //38
+    | <DIFERENCIA : "!=">       //39
+    | <NEGACION : "!">          //40
+    | <AND : "&&">              //41
+    | <OR : "||">               //42
+}
+
+
+    //VALORES PREDETERMINADOS
+    TOKEN : 
+    {
+        <TRUE : "verdadero">        //43
+        |<FALSE : "falso">           //44
+        |<NULL  : "nulo">            //45
+    }
+
+
+
+
+//TIPOS DE DATOS
+TOKEN :
+{
+    <INT : "entero">            //46
+    | <FLOAT : "flotante">      //47
+    | <STRING : "cadena">       //48
+    | <BOOL : "bool">           //49
+    | <CARACTER : "caracter">       //50
+    | <NUMERO : (["0" - "9"])+>         //51
+    | <IDENTIFICADOR :  ["a" - "z", "A" - "Z"](["a" - "z", "A" - "Z", "0" - "9", "_"])*>    //52
+    | <DECIMAL : (["0" - "9"])+["."](["0" - "9"])+>                 //53
+    | <CADENA : "\""(~["\""])*"\"" > //54
+    | <CHAR : <COMILLA>["a" - "z", "A" - "Z", "0" - "9"]<COMILLA>>      //55
+    | <DOSPUNTOS : ":">     //56
+    
+}
+
+
+
+SKIP : 
+{
+    " " | "\n" | "\r" | "\r\n" | "\t" 
+}
+
+
+void Programa() :
 {}
 {
-  (Instruccion())+ <EOF>
+    <MAIN><PARI><PARD><LLAVEI>(<IDENTIFICADOR>|<CADENA>)<LLAVED><EOF>
 }
 
-/** Instruccion -> evaluar [ Expresion ]; */
-void Instruccion() :
-{double e;}
-{
-  <EVALUAR> <CORI> e=Expresion() <CORD> <PCOMA> {System.out.println("El valor de la expresion es: "+e);}
-}
 
-/** Expresion -> ExpresionMultiplicativa ('+' ExpresionMultiplicativa)*
-              |  ExpresionMultiplicativa ('-' ExpresionMultiplicativa)*
-*/
-double Expresion() :
-{double e, e1;}
-{
-    e=ExpresionMultiplicativa()
-    (
-        <MAS> e1=ExpresionMultiplicativa() {e += e1;}
-        |
-        <MENOS> e1=ExpresionMultiplicativa() {e -= e1;}
-    )*
-    {return e;}
-}
 
-/** ExpresionMultiplicativa -> ExpresionUnaria ('*' ExpresionUnaria)*
-                            |  ExpresionUnaria ('/' ExpresionUnaria)*
-*/
-double ExpresionMultiplicativa() :
-{double e, e1;}
-{
-    e=ExpresionUnaria()
-    (
-        <POR> e1=ExpresionUnaria() {e *= e1;}
-        |
-        <DIV> e1=ExpresionUnaria() {e /= e1;}
-    )*
-    {return e;}
-}
 
-/** ExpresionUnaria -> '-' ExpresionUnaria
-                    |  Primitivo
- */
-double ExpresionUnaria() :
-{double e;}
-{
-    <MENOS> e=ExpresionUnaria() {return -e;}
-    |
-    e=Primitivo() {return e;}
-}
-
-/** Primitivo -> Numero
-              |  Decimal
-              |  '(' Expresion ')' 
-*/
-double Primitivo() :
-{double e;}
-{
-    <NUMERO> {return Double.parseDouble(token.image);}
-    |
-    <DECIMAL> {return Double.parseDouble(token.image);}
-    |
-    <PARENI> e=Expresion() <PAREND> {return e;}
-}
