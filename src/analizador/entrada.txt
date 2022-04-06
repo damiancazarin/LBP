@@ -1,4 +1,3 @@
 principal(){
-	"Hola que haces
-	
+    entero x = 4 cadena caracter "$" 'u';	
 }
