@@ -2,6 +2,7 @@
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Scanner;
 
 /** Token Manager. */
 public class GramaticaTokenManager implements GramaticaConstants

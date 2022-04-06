@@ -1,3 +1,2 @@
-principal(){
+
     entero x = 4 cadena caracter "$" 'u';	
-}

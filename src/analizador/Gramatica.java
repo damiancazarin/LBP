@@ -2,21 +2,24 @@
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Scanner;
 
 class Gramatica implements GramaticaConstants {
 
     public static void main(String[] args )  throws ParseException, FileNotFoundException {
-
+    Scanner entrada = new Scanner(System.in);
+    System.out.println("Ingresa el nombre del archivo que quieres ejecutar");
+    String str = entrada.next();
         try{
-            Gramatica analizador = new Gramatica(new BufferedReader(new FileReader("./entrada.txt")));
+            Gramatica analizador = new Gramatica(new BufferedReader(new FileReader(str + ".txt")));
             analizador.Programa();
-            System.out.println("\tAnalizador ha terminado");
+            System.out.println("\tEjecucion finalizada sin errores");
         }
 
         catch(ParseException e){
 
             System.out.println(e.getMessage());
-            System.out.println("\tAnalizador ha terminado");
+            System.out.println("\tEjecucion finalizada");
         }
     }
 
