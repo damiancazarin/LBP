@@ -8,12 +8,12 @@ class Gramatica implements GramaticaConstants {
 
     public static void main(String[] args )  throws ParseException, FileNotFoundException {
     Scanner entrada = new Scanner(System.in);
-    System.out.println("Ingresa el nombre del archivo que quieres ejecutar");
-    String str = entrada.next();
+    //System.out.println("Ingresa el nombre del archivo que quieres ejecutar");
+    //String str = entrada.next();
         try{
-            Gramatica analizador = new Gramatica(new BufferedReader(new FileReader(str + ".txt")));
+            Gramatica analizador = new Gramatica(new BufferedReader(new FileReader("entrada2" + ".txt")));
             analizador.Programa();
-            System.out.println("\tEjecucion finalizada sin errores");
+            System.out.println("\tEjecucion finalizada");
         }
 
         catch(ParseException e){
@@ -24,251 +24,257 @@ class Gramatica implements GramaticaConstants {
     }
 
   static final public void Programa() throws ParseException {
-    Bloque();
+    try {
+      jj_consume_token(MAIN);
+      jj_consume_token(PARI);
+      jj_consume_token(PARD);
+      jj_consume_token(LLAVEI);
+      Bloque();
+      jj_consume_token(LLAVED);
+      jj_consume_token(0);
+    } catch (ParseException e) {
+        System.out.println("\nError Sintactico (PROGRAMA) en linea " + token.beginLine  + ", columna  " + token.beginColumn + ".\n" +
+ "Se encontro \"" + token.image + "\", se esperaba "+ e.expectedTokenSequences.length );
+    }
   }
 
   static final public void Bloque() throws ParseException {
-    label_1:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case ASIGNACION:
-      case MAS:
-      case MENOS:
-      case MULTIPLICAR:
-      case DIVIDIR:
-      case INCR:
-      case DECR:
-      case MODULO:
-      case SUMAIGUAL:
-      case RESTAIGUAL:
-      case MULTIGUAL:
-      case DIVIDIRIGUAL:
-      case MODULOIGUAL:
-      case VOID:
-      case MAIN:
-      case WRITE:
-      case READ:
-      case IF:
-      case ELSE:
-      case ELSEIF:
-      case RETURN:
-      case BREAK:
-      case FOR:
-      case WHILE:
-      case PARI:
-      case PARD:
-      case LLAVEI:
-      case LLAVED:
-      case DELIMITER:
-      case COMA:
-      case COMILLA:
-      case COMENTARIO:
-      case PUNTO:
-      case IGUALDAD:
-      case MAYOR:
-      case MAYORI:
-      case MENOR:
-      case MENORI:
-      case DIFERENCIA:
-      case NEGACION:
-      case AND:
-      case OR:
-      case TRUE:
-      case FALSE:
-      case NULL:
-      case INT:
-      case FLOAT:
-      case STRING:
-      case BOOL:
-      case CARACTER:
-      case NUMERO:
-      case IDENTIFICADOR:
-      case DECIMAL:
-      case CADENA:
-      case CHAR:
-      case DOSPUNTOS:
-        ;
-        break;
-      default:
-        jj_la1[0] = jj_gen;
-        break label_1;
+    try {
+      label_1:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case ASIGNACION:
+        case MAS:
+        case MENOS:
+        case MULTIPLICAR:
+        case DIVIDIR:
+        case INCR:
+        case DECR:
+        case MODULO:
+        case SUMAIGUAL:
+        case RESTAIGUAL:
+        case MULTIGUAL:
+        case DIVIDIRIGUAL:
+        case MODULOIGUAL:
+        case VOID:
+        case WRITE:
+        case READ:
+        case IF:
+        case ELSE:
+        case ELSEIF:
+        case RETURN:
+        case BREAK:
+        case FOR:
+        case WHILE:
+        case PARI:
+        case PARD:
+        case DELIMITER:
+        case COMA:
+        case COMILLA:
+        case COMENTARIO:
+        case PUNTO:
+        case IGUALDAD:
+        case MAYOR:
+        case MAYORI:
+        case MENOR:
+        case MENORI:
+        case DIFERENCIA:
+        case NEGACION:
+        case AND:
+        case OR:
+        case TRUE:
+        case FALSE:
+        case NULL:
+        case INT:
+        case FLOAT:
+        case STRING:
+        case BOOL:
+        case CARACTER:
+        case NUMERO:
+        case IDENTIFICADOR:
+        case DECIMAL:
+        case CADENA:
+        case CHAR:
+        case DOSPUNTOS:
+          ;
+          break;
+        default:
+          jj_la1[0] = jj_gen;
+          break label_1;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case ASIGNACION:
+          jj_consume_token(ASIGNACION);
+          break;
+        case MAS:
+          jj_consume_token(MAS);
+          break;
+        case MENOS:
+          jj_consume_token(MENOS);
+          break;
+        case MULTIPLICAR:
+          jj_consume_token(MULTIPLICAR);
+          break;
+        case DIVIDIR:
+          jj_consume_token(DIVIDIR);
+          break;
+        case INCR:
+          jj_consume_token(INCR);
+          break;
+        case DECR:
+          jj_consume_token(DECR);
+          break;
+        case MODULO:
+          jj_consume_token(MODULO);
+          break;
+        case SUMAIGUAL:
+          jj_consume_token(SUMAIGUAL);
+          break;
+        case RESTAIGUAL:
+          jj_consume_token(RESTAIGUAL);
+          break;
+        case MULTIGUAL:
+          jj_consume_token(MULTIGUAL);
+          break;
+        case DIVIDIRIGUAL:
+          jj_consume_token(DIVIDIRIGUAL);
+          break;
+        case MODULOIGUAL:
+          jj_consume_token(MODULOIGUAL);
+          break;
+        case VOID:
+          jj_consume_token(VOID);
+          break;
+        case WRITE:
+          jj_consume_token(WRITE);
+          break;
+        case READ:
+          jj_consume_token(READ);
+          break;
+        case IF:
+          jj_consume_token(IF);
+          break;
+        case ELSE:
+          jj_consume_token(ELSE);
+          break;
+        case ELSEIF:
+          jj_consume_token(ELSEIF);
+          break;
+        case RETURN:
+          jj_consume_token(RETURN);
+          break;
+        case BREAK:
+          jj_consume_token(BREAK);
+          break;
+        case FOR:
+          jj_consume_token(FOR);
+          break;
+        case WHILE:
+          jj_consume_token(WHILE);
+          break;
+        case IGUALDAD:
+          jj_consume_token(IGUALDAD);
+          break;
+        case MAYOR:
+          jj_consume_token(MAYOR);
+          break;
+        case MAYORI:
+          jj_consume_token(MAYORI);
+          break;
+        case MENOR:
+          jj_consume_token(MENOR);
+          break;
+        case MENORI:
+          jj_consume_token(MENORI);
+          break;
+        case DIFERENCIA:
+          jj_consume_token(DIFERENCIA);
+          break;
+        case NEGACION:
+          jj_consume_token(NEGACION);
+          break;
+        case AND:
+          jj_consume_token(AND);
+          break;
+        case OR:
+          jj_consume_token(OR);
+          break;
+        case TRUE:
+          jj_consume_token(TRUE);
+          break;
+        case FALSE:
+          jj_consume_token(FALSE);
+          break;
+        case NULL:
+          jj_consume_token(NULL);
+          break;
+        case INT:
+          jj_consume_token(INT);
+          break;
+        case FLOAT:
+          jj_consume_token(FLOAT);
+          break;
+        case STRING:
+          jj_consume_token(STRING);
+          break;
+        case BOOL:
+          jj_consume_token(BOOL);
+          break;
+        case CARACTER:
+          jj_consume_token(CARACTER);
+          break;
+        case NUMERO:
+          jj_consume_token(NUMERO);
+          break;
+        case IDENTIFICADOR:
+          jj_consume_token(IDENTIFICADOR);
+          break;
+        case DECIMAL:
+          jj_consume_token(DECIMAL);
+          break;
+        case CADENA:
+          jj_consume_token(CADENA);
+          break;
+        case CHAR:
+          jj_consume_token(CHAR);
+          break;
+        case DOSPUNTOS:
+          jj_consume_token(DOSPUNTOS);
+          break;
+        case PARI:
+          jj_consume_token(PARI);
+          break;
+        case PARD:
+          jj_consume_token(PARD);
+          break;
+        case DELIMITER:
+          jj_consume_token(DELIMITER);
+          break;
+        case COMA:
+          jj_consume_token(COMA);
+          break;
+        case COMILLA:
+          jj_consume_token(COMILLA);
+          break;
+        case COMENTARIO:
+          jj_consume_token(COMENTARIO);
+          break;
+        case PUNTO:
+          jj_consume_token(PUNTO);
+          break;
+        default:
+          jj_la1[1] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case ASIGNACION:
-        jj_consume_token(ASIGNACION);
-        break;
-      case MAS:
-        jj_consume_token(MAS);
-        break;
-      case MENOS:
-        jj_consume_token(MENOS);
-        break;
-      case MULTIPLICAR:
-        jj_consume_token(MULTIPLICAR);
-        break;
-      case DIVIDIR:
-        jj_consume_token(DIVIDIR);
-        break;
-      case INCR:
-        jj_consume_token(INCR);
-        break;
-      case DECR:
-        jj_consume_token(DECR);
-        break;
-      case MODULO:
-        jj_consume_token(MODULO);
-        break;
-      case SUMAIGUAL:
-        jj_consume_token(SUMAIGUAL);
-        break;
-      case RESTAIGUAL:
-        jj_consume_token(RESTAIGUAL);
-        break;
-      case MULTIGUAL:
-        jj_consume_token(MULTIGUAL);
-        break;
-      case DIVIDIRIGUAL:
-        jj_consume_token(DIVIDIRIGUAL);
-        break;
-      case MODULOIGUAL:
-        jj_consume_token(MODULOIGUAL);
-        break;
-      case VOID:
-        jj_consume_token(VOID);
-        break;
-      case MAIN:
-        jj_consume_token(MAIN);
-        break;
-      case WRITE:
-        jj_consume_token(WRITE);
-        break;
-      case READ:
-        jj_consume_token(READ);
-        break;
-      case IF:
-        jj_consume_token(IF);
-        break;
-      case ELSE:
-        jj_consume_token(ELSE);
-        break;
-      case ELSEIF:
-        jj_consume_token(ELSEIF);
-        break;
-      case RETURN:
-        jj_consume_token(RETURN);
-        break;
-      case BREAK:
-        jj_consume_token(BREAK);
-        break;
-      case FOR:
-        jj_consume_token(FOR);
-        break;
-      case WHILE:
-        jj_consume_token(WHILE);
-        break;
-      case IGUALDAD:
-        jj_consume_token(IGUALDAD);
-        break;
-      case MAYOR:
-        jj_consume_token(MAYOR);
-        break;
-      case MAYORI:
-        jj_consume_token(MAYORI);
-        break;
-      case MENOR:
-        jj_consume_token(MENOR);
-        break;
-      case MENORI:
-        jj_consume_token(MENORI);
-        break;
-      case DIFERENCIA:
-        jj_consume_token(DIFERENCIA);
-        break;
-      case NEGACION:
-        jj_consume_token(NEGACION);
-        break;
-      case AND:
-        jj_consume_token(AND);
-        break;
-      case OR:
-        jj_consume_token(OR);
-        break;
-      case TRUE:
-        jj_consume_token(TRUE);
-        break;
-      case FALSE:
-        jj_consume_token(FALSE);
-        break;
-      case NULL:
-        jj_consume_token(NULL);
-        break;
-      case INT:
-        jj_consume_token(INT);
-        break;
-      case FLOAT:
-        jj_consume_token(FLOAT);
-        break;
-      case STRING:
-        jj_consume_token(STRING);
-        break;
-      case BOOL:
-        jj_consume_token(BOOL);
-        break;
-      case CARACTER:
-        jj_consume_token(CARACTER);
-        break;
-      case NUMERO:
-        jj_consume_token(NUMERO);
-        break;
-      case IDENTIFICADOR:
-        jj_consume_token(IDENTIFICADOR);
-        break;
-      case DECIMAL:
-        jj_consume_token(DECIMAL);
-        break;
-      case CADENA:
-        jj_consume_token(CADENA);
-        break;
-      case CHAR:
-        jj_consume_token(CHAR);
-        break;
-      case DOSPUNTOS:
-        jj_consume_token(DOSPUNTOS);
-        break;
-      case PARI:
-        jj_consume_token(PARI);
-        break;
-      case PARD:
-        jj_consume_token(PARD);
-        break;
-      case LLAVEI:
-        jj_consume_token(LLAVEI);
-        break;
-      case LLAVED:
-        jj_consume_token(LLAVED);
-        break;
-      case DELIMITER:
-        jj_consume_token(DELIMITER);
-        break;
-      case COMA:
-        jj_consume_token(COMA);
-        break;
-      case COMILLA:
-        jj_consume_token(COMILLA);
-        break;
-      case COMENTARIO:
-        jj_consume_token(COMENTARIO);
-        break;
-      case PUNTO:
-        jj_consume_token(PUNTO);
-        break;
-      default:
-        jj_la1[1] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+    } catch (ParseException e) {
+System.out.println("\nError Sintactico (BLOQUE) en linea " + token.beginLine + ", columna  " + token.beginColumn + ".\n El token  \"" + token.image +
+"\" no es reconocido por el lenguaje");
+    } catch (TokenMgrError a) {
+System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  " + token.beginColumn + ".\n El token  \"" + token.image +
+"\" no es reconocido por el lenguaje");
     }
-    jj_consume_token(0);
   }
 
   static private boolean jj_initialized_once = false;
@@ -289,7 +295,7 @@ class Gramatica implements GramaticaConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0xfffffffe,0xfffffffe,};
+      jj_la1_0 = new int[] {0xe7ff7ffe,0xe7ff7ffe,};
    }
    private static void jj_la1_init_1() {
       jj_la1_1 = new int[] {0x1ffffff,0x1ffffff,};

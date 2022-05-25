@@ -1,1 +1,5 @@
-caracter a = 'b'; ;;;;;; "##$%&"
+programa(){
+
+Imprimir("Hola mundo");
+
+}

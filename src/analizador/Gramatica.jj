@@ -1,3 +1,8 @@
+options{
+    
+    LOOKAHEAD=1;
+}
+
 
 PARSER_BEGIN(Gramatica)
 import java.io.BufferedReader;
@@ -9,12 +14,12 @@ class Gramatica{
 
     public static void main(String[] args )  throws ParseException, FileNotFoundException {
     Scanner entrada = new Scanner(System.in);
-    System.out.println("Ingresa el nombre del archivo que quieres ejecutar");
-    String str = entrada.next();
+    //System.out.println("Ingresa el nombre del archivo que quieres ejecutar");
+    //String str = entrada.next();
         try{
-            Gramatica analizador = new Gramatica(new BufferedReader(new FileReader(str + ".txt")));
+            Gramatica analizador = new Gramatica(new BufferedReader(new FileReader("entrada2" + ".txt")));
             analizador.Programa();
-            System.out.println("\tEjecucion finalizada sin errores");
+            System.out.println("\tEjecucion finalizada");
         }
         
         catch(ParseException e){
@@ -32,73 +37,73 @@ PARSER_END (Gramatica)
 //OPERADORES ARITMETICOS
 TOKEN : 
 {
-    <ASIGNACION : "=">          //1
-    |<MAS : "+">                //2
-    |<MENOS : "-">              //3
-    |<MULTIPLICAR : "*">        //4 
-    |<DIVIDIR : "/">            //5
-    |<INCR : "++">              //6
-    |<DECR : "--">              //7
-    |<MODULO : "%">             //8
-    |<SUMAIGUAL : "+=">         //9
-    |<RESTAIGUAL : "-=">        //10
-    |<MULTIGUAL : "*=">         //11
-    |<DIVIDIRIGUAL : "/=">      //12
-    |<MODULOIGUAL : "%=">       //13
+    <ASIGNACION : "=">  {System.out.println("Token detectado: Operador_Asignacion" +  image);}        //1
+    |<MAS : "+">        {System.out.println("Token detectado: Opeador_Mas" +  image);}        //2
+    |<MENOS : "-">      {System.out.println("Token detectado: Operador_Menos" +  image);}        //3
+    |<MULTIPLICAR : "*">{System.out.println("Token detectado: Operador_Multiplicar" +  image);}        //4 
+    |<DIVIDIR : "/">    {System.out.println("Token detectado: " +  image);}        //5
+    |<INCR : "++">      {System.out.println("Token detectado: " +  image);}        //6
+    |<DECR : "--">      {System.out.println("Token detectado: " +  image);}        //7
+    |<MODULO : "%">        {System.out.println("Token detectado: " +  image);}     //8
+    |<SUMAIGUAL : "+=">    {System.out.println("Token detectado: " +  image);}     //9
+    |<RESTAIGUAL : "-=">   {System.out.println("Token detectado: " +  image);}     //10
+    |<MULTIGUAL : "*=">    {System.out.println("Token detectado: " +  image);}     //11
+    |<DIVIDIRIGUAL : "/="> {System.out.println("Token detectado: " +  image);}     //12
+    |<MODULOIGUAL : "%=">  {System.out.println("Token detectado: " +  image);}     //13
 }
 
 //PALABRAS RESERVADAS
 TOKEN : 
 {
-    <VOID : "vacio">            //14
-    | <MAIN : "principal">      //15
-    | <WRITE : "imprimir">      //16
-    | <READ : "leer">           //17
-    | <IF : "cuando">           //18
-    | <ELSE : "sino">           //19
-    | <ELSEIF : "sino_cuando">  //20
-    | <RETURN : "retorno">      //21
-    | <BREAK : "romper">        //22
-    | <FOR : "ciclo_for">       //23
-    | <WHILE : "ciclo_mientras">//24
+    <VOID : "vacio">          {System.out.println("Token detectado: " +  image);}  //14
+    | <MAIN : "principal">    {System.out.println("Token detectado: " +  image);}  //15
+    | <WRITE : "imprimir">    {System.out.println("Token detectado: " +  image);}  //16
+    | <READ : "leer">         {System.out.println("Token detectado: " +  image);}  //17
+    | <IF : "cuando">         {System.out.println("Token detectado: " +  image);}  //18
+    | <ELSE : "sino">           {System.out.println("Token detectado: " +  image);}//19
+    | <ELSEIF : "sino_cuando">  {System.out.println("Token detectado: " +  image);}//20
+    | <RETURN : "retorno">      {System.out.println("Token detectado: " +  image);}//21
+    | <BREAK : "romper">        {System.out.println("Token detectado: " +  image);}//22
+    | <FOR : "ciclo_for">       {System.out.println("Token detectado: " +  image);}//23
+    | <WHILE : "ciclo_mientras">{System.out.println("Token detectado: " +  image);}//24
 }
 
 //CARACTERES ESPECIALES
 TOKEN :
 {
-    <PARI : "(">                //25
-    | <PARD : ")">              //26
-    | <LLAVEI : "{">            //27
-    | <LLAVED : "}">            //28
-    | <DELIMITER : ";">         //29
-    | <COMA : ",">              //30
-    | <COMILLA : "\"">          //31
-    | <COMENTARIO : "#">        //32
-    | <PUNTO : ".">             //33
+    <PARI : "(">                {System.out.println("Token detectado: " +  image);}//25
+    | <PARD : ")">              {System.out.println("Token detectado: " +  image);}//26
+    | <LLAVEI : "{">            {System.out.println("Token detectado: " +  image);}//27
+    | <LLAVED : "}">            {System.out.println("Token detectado: " +  image);}//28
+    | <DELIMITER : ";">         {System.out.println("Token detectado: " +  image);}//29
+    | <COMA : ",">              {System.out.println("Token detectado: " +  image);}//30
+    | <COMILLA : "\"">          {System.out.println("Token detectado: " +  image);}//31
+    | <COMENTARIO : "#">        {System.out.println("Token detectado: " +  image);}//32
+    | <PUNTO : ".">             {System.out.println("Token detectado: " +  image);}//33
 }
 
 
 //OPERADORES LOGICOS
 TOKEN : 
 {
-    <IGUALDAD : "==">           //34
-    | <MAYOR : ">">             //35
-    | <MAYORI : ">=">           //36
-    | <MENOR : "<">             //37
-    | <MENORI : "<=">           //38
-    | <DIFERENCIA : "!=">       //39
-    | <NEGACION : "!">          //40
-    | <AND : "&&">              //41
-    | <OR : "||">               //42
+    <IGUALDAD : "==">           {System.out.println("Token detectado: " +  image);}//34
+    | <MAYOR : ">">             {System.out.println("Token detectado: " +  image);}//35
+    | <MAYORI : ">=">           {System.out.println("Token detectado: " +  image);}//36
+    | <MENOR : "<">             {System.out.println("Token detectado: " +  image);}//37
+    | <MENORI : "<=">           {System.out.println("Token detectado: " +  image);}//38
+    | <DIFERENCIA : "!=">       {System.out.println("Token detectado: " +  image);}//39
+    | <NEGACION : "!">          {System.out.println("Token detectado: " +  image);}//40
+    | <AND : "&&">              {System.out.println("Token detectado: " +  image);}//41
+    | <OR : "||">               {System.out.println("Token detectado: " +  image);}//42
 }
 
 
     //VALORES PREDETERMINADOS
     TOKEN : 
     {
-        <TRUE : "verdadero">        //43
-        |<FALSE : "falso">           //44
-        |<NULL  : "nulo">            //45
+        <TRUE : "verdadero">        {System.out.println("Token detectado: " +  image);}//43
+        |<FALSE : "falso">           {System.out.println("Token detectado: " +  image);}//44
+        |<NULL  : "nulo">            {System.out.println("Token detectado: " +  image);}//45
     }
 
 
@@ -107,17 +112,17 @@ TOKEN :
 //TIPOS DE DATOS
 TOKEN :
 {
-    <INT : "entero">            //46
-    | <FLOAT : "flotante">      //47
-    | <STRING : "cadena">       //48
-    | <BOOL : "bool">           //49
-    | <CARACTER : "caracter">       //50
-    | <NUMERO : (["0" - "9"])+>         //51
-    | <IDENTIFICADOR :  ["a" - "z", "A" - "Z"](["a" - "z", "A" - "Z", "0" - "9", "_"])*>    //52
-    | <DECIMAL : (["0" - "9"])+["."](["0" - "9"])+>                 //53
-    | <CADENA : "\""(~["\""])*"\"" > //54
-    | <CHAR : "\'"(~["\""])"\'" >      //55
-    | <DOSPUNTOS : ":">     //56
+    <INT : "entero">            {System.out.println("Token detectado: " +  image);}//46
+    | <FLOAT : "flotante">      {System.out.println("Token detectado: " +  image);}//47
+    | <STRING : "cadena">       {System.out.println("Token detectado: " +  image);}//48
+    | <BOOL : "bool">           {System.out.println("Token detectado: " +  image);}//49
+    | <CARACTER : "caracter">   {System.out.println("Token detectado: " +  image);}    //50
+    | <NUMERO : (["0" - "9"])+>         {System.out.println("Token detectado: " +  image);}//51
+    | <IDENTIFICADOR :  ["a" - "z", "A" - "Z"](["a" - "z", "A" - "Z", "0" - "9", "_"])*>   {System.out.println("Token detectado: " +  image);} //52
+    | <DECIMAL : (["0" - "9"])+["."](["0" - "9"])+>                 {System.out.println("Token detectado: " +  image);}//53
+    | <CADENA : "\""(~["\""])*"\"" > {System.out.println("Token detectado: " +  image);} //54
+    | <CHAR : "\'"(~["\""])"\'" >     {System.out.println("Token detectado: " +  image);} //55
+    | <DOSPUNTOS : ":">    {System.out.println("Token detectado: " +  image);} //56
     
 }
 
@@ -132,13 +137,20 @@ SKIP :
 void Programa() :
 {}
 {
-    Bloque()
+try{
+    <MAIN><PARI><PARD><LLAVEI>Bloque()<LLAVED><EOF>
+}catch(ParseException e){
+        System.out.println("\nError Sintactico (PROGRAMA) en linea " + token.beginLine  + ", columna  " + token.beginColumn + ".\n" +  
+ "Se encontro \"" + token.image + "\", se esperaba "+ e.TokenSequences );
+    }
 }
 
 
 void Bloque() : 
 {}
 {
+
+try{
 (
     <ASIGNACION>          
     |<MAS>                
@@ -153,8 +165,7 @@ void Bloque() :
     |<MULTIGUAL >         
     |<DIVIDIRIGUAL >      
     |<MODULOIGUAL >
-    | <VOID >          
-    | <MAIN >      
+    | <VOID >             
     | <WRITE >      
     | <READ >           
     | <IF >           
@@ -187,18 +198,26 @@ void Bloque() :
     | <CADENA > 
     | <CHAR >      
     | <DOSPUNTOS >
-    |  <PARI >                
-    | <PARD >              
-    | <LLAVEI >            
-    | <LLAVED >            
+    | <PARI >                
+    | <PARD >                         
     | <DELIMITER >         
     | <COMA >              
     | <COMILLA >          
     | <COMENTARIO >            
     | <PUNTO >
-    
 )*
-    <EOF>
+
+}
+catch(ParseException e){
+
+System.out.println("\nError Sintactico (BLOQUE) en linea " + token.beginLine + ", columna  " + token.beginColumn + ".\n El token  \"" + token.image + 
+"\" no es reconocido por el lenguaje");
+
+}catch(TokenMgrError a){
+System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  " + token.beginColumn + ".\n El token  \"" + token.image + 
+"\" no es reconocido por el lenguaje");
+}
+
 }
 
 

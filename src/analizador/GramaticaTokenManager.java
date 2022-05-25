@@ -887,6 +887,9 @@ static final long[] jjtoSkip = {
 static protected SimpleCharStream input_stream;
 static private final int[] jjrounds = new int[13];
 static private final int[] jjstateSet = new int[26];
+static StringBuffer image;
+static int jjimageLen;
+static int lengthOfMatch;
 static protected char curChar;
 /** Constructor. */
 public GramaticaTokenManager(SimpleCharStream stream){
@@ -985,6 +988,8 @@ public static Token getNextToken()
       matchedToken = jjFillToken();
       return matchedToken;
    }
+   image = null;
+   jjimageLen = 0;
 
    try { input_stream.backup(0);
       while (curChar <= 32 && (0x100000600L & (1L << curChar)) != 0L)
@@ -1001,6 +1006,7 @@ public static Token getNextToken()
       if ((jjtoToken[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L)
       {
          matchedToken = jjFillToken();
+         TokenLexicalActions(matchedToken);
          return matchedToken;
       }
       else
@@ -1031,6 +1037,401 @@ public static Token getNextToken()
   }
 }
 
+static void TokenLexicalActions(Token matchedToken)
+{
+   switch(jjmatchedKind)
+   {
+      case 1 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[1]);
+        lengthOfMatch = jjstrLiteralImages[1].length();
+                         System.out.println("Token detectado: " +  image);
+         break;
+      case 2 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[2]);
+        lengthOfMatch = jjstrLiteralImages[2].length();
+                         System.out.println("Token detectado: " +  image);
+         break;
+      case 3 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[3]);
+        lengthOfMatch = jjstrLiteralImages[3].length();
+                         System.out.println("Token detectado: " +  image);
+         break;
+      case 4 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[4]);
+        lengthOfMatch = jjstrLiteralImages[4].length();
+                         System.out.println("Token detectado: " +  image);
+         break;
+      case 5 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[5]);
+        lengthOfMatch = jjstrLiteralImages[5].length();
+                         System.out.println("Token detectado: " +  image);
+         break;
+      case 6 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[6]);
+        lengthOfMatch = jjstrLiteralImages[6].length();
+                         System.out.println("Token detectado: " +  image);
+         break;
+      case 7 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[7]);
+        lengthOfMatch = jjstrLiteralImages[7].length();
+                         System.out.println("Token detectado: " +  image);
+         break;
+      case 8 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[8]);
+        lengthOfMatch = jjstrLiteralImages[8].length();
+                            System.out.println("Token detectado: " +  image);
+         break;
+      case 9 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[9]);
+        lengthOfMatch = jjstrLiteralImages[9].length();
+                            System.out.println("Token detectado: " +  image);
+         break;
+      case 10 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[10]);
+        lengthOfMatch = jjstrLiteralImages[10].length();
+                            System.out.println("Token detectado: " +  image);
+         break;
+      case 11 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[11]);
+        lengthOfMatch = jjstrLiteralImages[11].length();
+                            System.out.println("Token detectado: " +  image);
+         break;
+      case 12 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[12]);
+        lengthOfMatch = jjstrLiteralImages[12].length();
+                            System.out.println("Token detectado: " +  image);
+         break;
+      case 13 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[13]);
+        lengthOfMatch = jjstrLiteralImages[13].length();
+                            System.out.println("Token detectado: " +  image);
+         break;
+      case 14 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[14]);
+        lengthOfMatch = jjstrLiteralImages[14].length();
+                               System.out.println("Token detectado: " +  image);
+         break;
+      case 15 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[15]);
+        lengthOfMatch = jjstrLiteralImages[15].length();
+                               System.out.println("Token detectado: " +  image);
+         break;
+      case 16 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[16]);
+        lengthOfMatch = jjstrLiteralImages[16].length();
+                               System.out.println("Token detectado: " +  image);
+         break;
+      case 17 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[17]);
+        lengthOfMatch = jjstrLiteralImages[17].length();
+                               System.out.println("Token detectado: " +  image);
+         break;
+      case 18 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[18]);
+        lengthOfMatch = jjstrLiteralImages[18].length();
+                               System.out.println("Token detectado: " +  image);
+         break;
+      case 19 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[19]);
+        lengthOfMatch = jjstrLiteralImages[19].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 20 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[20]);
+        lengthOfMatch = jjstrLiteralImages[20].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 21 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[21]);
+        lengthOfMatch = jjstrLiteralImages[21].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 22 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[22]);
+        lengthOfMatch = jjstrLiteralImages[22].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 23 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[23]);
+        lengthOfMatch = jjstrLiteralImages[23].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 24 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[24]);
+        lengthOfMatch = jjstrLiteralImages[24].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 25 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[25]);
+        lengthOfMatch = jjstrLiteralImages[25].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 26 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[26]);
+        lengthOfMatch = jjstrLiteralImages[26].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 27 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[27]);
+        lengthOfMatch = jjstrLiteralImages[27].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 28 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[28]);
+        lengthOfMatch = jjstrLiteralImages[28].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 29 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[29]);
+        lengthOfMatch = jjstrLiteralImages[29].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 30 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[30]);
+        lengthOfMatch = jjstrLiteralImages[30].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 31 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[31]);
+        lengthOfMatch = jjstrLiteralImages[31].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 32 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[32]);
+        lengthOfMatch = jjstrLiteralImages[32].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 33 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[33]);
+        lengthOfMatch = jjstrLiteralImages[33].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 34 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[34]);
+        lengthOfMatch = jjstrLiteralImages[34].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 35 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[35]);
+        lengthOfMatch = jjstrLiteralImages[35].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 36 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[36]);
+        lengthOfMatch = jjstrLiteralImages[36].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 37 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[37]);
+        lengthOfMatch = jjstrLiteralImages[37].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 38 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[38]);
+        lengthOfMatch = jjstrLiteralImages[38].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 39 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[39]);
+        lengthOfMatch = jjstrLiteralImages[39].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 40 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[40]);
+        lengthOfMatch = jjstrLiteralImages[40].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 41 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[41]);
+        lengthOfMatch = jjstrLiteralImages[41].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 42 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[42]);
+        lengthOfMatch = jjstrLiteralImages[42].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 43 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[43]);
+        lengthOfMatch = jjstrLiteralImages[43].length();
+                                     System.out.println("Token detectado: " +  image);
+         break;
+      case 44 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[44]);
+        lengthOfMatch = jjstrLiteralImages[44].length();
+                                      System.out.println("Token detectado: " +  image);
+         break;
+      case 45 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[45]);
+        lengthOfMatch = jjstrLiteralImages[45].length();
+                                      System.out.println("Token detectado: " +  image);
+         break;
+      case 46 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[46]);
+        lengthOfMatch = jjstrLiteralImages[46].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 47 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[47]);
+        lengthOfMatch = jjstrLiteralImages[47].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 48 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[48]);
+        lengthOfMatch = jjstrLiteralImages[48].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 49 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[49]);
+        lengthOfMatch = jjstrLiteralImages[49].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 50 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[50]);
+        lengthOfMatch = jjstrLiteralImages[50].length();
+                                 System.out.println("Token detectado: " +  image);
+         break;
+      case 51 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                                         System.out.println("Token detectado: " +  image);
+         break;
+      case 52 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                                                                                            System.out.println("Token detectado: " +  image);
+         break;
+      case 53 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                                                                     System.out.println("Token detectado: " +  image);
+         break;
+      case 54 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                                      System.out.println("Token detectado: " +  image);
+         break;
+      case 55 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                                       System.out.println("Token detectado: " +  image);
+         break;
+      case 56 :
+        if (image == null)
+            image = new StringBuffer();
+        image.append(jjstrLiteralImages[56]);
+        lengthOfMatch = jjstrLiteralImages[56].length();
+                            System.out.println("Token detectado: " +  image);
+         break;
+      default : 
+         break;
+   }
+}
 static private void jjCheckNAdd(int state)
 {
    if (jjrounds[state] != jjround)
