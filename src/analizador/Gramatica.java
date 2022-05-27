@@ -33,8 +33,50 @@ class Gramatica implements GramaticaConstants {
       jj_consume_token(LLAVED);
       jj_consume_token(0);
     } catch (ParseException e) {
-        System.out.println("\nError Sintactico (PROGRAMA) en linea " + e.currentToken.next.beginLine  + ", columna  " + e.currentToken.next.beginColumn + ".\n" +
-    "Se encontro \"" + e.currentToken.next.toString() + "\", se esperaba " +  e.expectedTokenSequences[0][0] );
+        System.out.println("\nError Sintactico (PROGRAMA) ");
+
+    Token currentToken = e.currentToken;
+    int [][]expectedTokenSequences = e.expectedTokenSequences;
+    String[] tokenImage = e.tokenImage;
+    String eol = System.getProperty("line.separator", "\n");
+
+    StringBuffer expected = new StringBuffer();
+    int maxSize = 0;
+    for (int i = 0; i < expectedTokenSequences.length; i++) {
+      if (maxSize < expectedTokenSequences[i].length) {
+        maxSize = expectedTokenSequences[i].length;
+      }
+      for (int j = 0; j < expectedTokenSequences[i].length; j++) {
+        expected.append(tokenImage[expectedTokenSequences[i][j]]).append(' ');
+      }
+      if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
+        expected.append("...");
+      }
+      expected.append(eol).append("    ");
+    }
+    String retval = "Se encontro \"";
+    Token tok = currentToken.next;
+    for (int i = 0; i < maxSize; i++) {
+      if (i != 0) retval += " ";
+      if (tok.kind == 0) {
+        retval += tokenImage[0];
+        break;
+      }
+      retval += " " + tokenImage[tok.kind];
+      retval += " \"";
+      //retval += add_escapes(tok.image);
+      //retval += " \"";
+      tok = tok.next;
+    }
+    retval += "\" en la linea " + currentToken.next.beginLine + ", columna " + currentToken.next.beginColumn;
+    retval += "." + eol;
+    if (expectedTokenSequences.length == 1) {
+      retval += "Se esperaba:" + eol + "    ";
+    } else {
+      retval += "Se esperaba alguno de estos:" + eol + "    ";
+    }
+    retval += expected.toString();
+    System.out.println(retval);
     }
   }
 
@@ -45,11 +87,13 @@ class Gramatica implements GramaticaConstants {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case WRITE:
         case IF:
+        case ELSE:
         case INT:
         case FLOAT:
         case STRING:
         case BOOL:
         case CARACTER:
+        case IDENTIFICADOR:
           ;
           break;
         default:
@@ -67,469 +111,303 @@ class Gramatica implements GramaticaConstants {
         case CARACTER:
           Declaraciones();
           break;
-        case IF:
-          condicionalIf();
-          break;
         default:
           jj_la1[1] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+          if (jj_2_1(3)) {
+            asignaciones();
+          } else {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            case IDENTIFICADOR:
+              incrementoDecremento();
+              break;
+            case IF:
+              condicionalIf();
+              break;
+            case ELSE:
+              jj_consume_token(ELSE);
+              break;
+            default:
+              jj_la1[2] = jj_gen;
+              jj_consume_token(-1);
+              throw new ParseException();
+            }
+          }
         }
       }
     } catch (ParseException e) {
-System.out.println("\nError Sintactico (BLOQUE) en linea " + token.beginLine + ", columna  " + token.beginColumn + ".\n El token  \"" + token.image +
-"\" no es reconocido por el lenguaje");
+System.out.println("\nError Sintactico (BLOQUE) en linea " + e.currentToken.next.beginLine + ", columna  " + e.currentToken.next.beginColumn);
     } catch (TokenMgrError a) {
-System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  " + token.beginColumn + ".\n El token  \"" + token.image +
+System.out.println("\nError Lexico en linea " + token.endLine  + ", columna  " + token.endColumn + ".\n El token  \"" + token.image +
 "\" no es reconocido por el lenguaje");
     }
   }
 
   static final public void Imprimir() throws ParseException {
-    try {
-      jj_consume_token(WRITE);
-      jj_consume_token(PARI);
+    jj_consume_token(WRITE);
+    jj_consume_token(PARI);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case IDENTIFICADOR:
+      jj_consume_token(IDENTIFICADOR);
+      break;
+    case NUMERO:
+      jj_consume_token(NUMERO);
+      break;
+    case DECIMAL:
+      jj_consume_token(DECIMAL);
+      break;
+    case TRUE:
+      jj_consume_token(TRUE);
+      break;
+    case FALSE:
+      jj_consume_token(FALSE);
+      break;
+    case NULL:
+      jj_consume_token(NULL);
+      break;
+    case CADENA:
+      jj_consume_token(CADENA);
+      break;
+    case CHAR:
+      jj_consume_token(CHAR);
+      break;
+    default:
+      jj_la1[3] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    jj_consume_token(PARD);
+    jj_consume_token(DELIMITER);
+  }
+
+  static final public void Declaraciones() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case INT:
+      jj_consume_token(INT);
+      break;
+    case CARACTER:
+      jj_consume_token(CARACTER);
+      break;
+    case FLOAT:
+      jj_consume_token(FLOAT);
+      break;
+    case STRING:
+      jj_consume_token(STRING);
+      break;
+    case BOOL:
+      jj_consume_token(BOOL);
+      break;
+    default:
+      jj_la1[4] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    jj_consume_token(IDENTIFICADOR);
+    label_2:
+    while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case CADENA:
-        jj_consume_token(CADENA);
-        break;
-      case IDENTIFICADOR:
-        jj_consume_token(IDENTIFICADOR);
+      case ASIGNACION:
+      case COMA:
+        ;
         break;
       default:
-        jj_la1[2] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+        jj_la1[5] = jj_gen;
+        break label_2;
       }
-      jj_consume_token(PARD);
-      jj_consume_token(DELIMITER);
-    } catch (ParseException e) {
-    System.out.println("Error sintactico xddd");
-    }
-  }
-
-  static final public void DeclaracionInt() throws ParseException {
-    try {
-      jj_consume_token(INT);
-      jj_consume_token(IDENTIFICADOR);
-      label_2:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case ASIGNACION:
-          ;
-          break;
-        default:
-          jj_la1[3] = jj_gen;
-          break label_2;
-        }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case ASIGNACION:
         jj_consume_token(ASIGNACION);
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IDENTIFICADOR:
+          jj_consume_token(IDENTIFICADOR);
+          break;
         case NUMERO:
           jj_consume_token(NUMERO);
           break;
-        case IDENTIFICADOR:
-          jj_consume_token(IDENTIFICADOR);
-          break;
-        default:
-          jj_la1[4] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
-      label_3:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case COMA:
-          ;
-          break;
-        default:
-          jj_la1[5] = jj_gen;
-          break label_3;
-        }
-        jj_consume_token(COMA);
-        jj_consume_token(IDENTIFICADOR);
-        jj_consume_token(ASIGNACION);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case NUMERO:
-          jj_consume_token(NUMERO);
-          break;
-        case IDENTIFICADOR:
-          jj_consume_token(IDENTIFICADOR);
-          break;
-        default:
-          jj_la1[6] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
-      jj_consume_token(DELIMITER);
-    } catch (ParseException e) {
-    System.out.println("Error sintactico, declaracion de entero incorrecta en linea "  + e.currentToken.next.beginLine +
-    ", columna  " + e.currentToken.next.beginColumn );
-    }
-  }
-
-  static final public void DeclaracionFloat() throws ParseException {
-    try {
-      jj_consume_token(FLOAT);
-      jj_consume_token(IDENTIFICADOR);
-      label_4:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case ASIGNACION:
-          ;
-          break;
-        default:
-          jj_la1[7] = jj_gen;
-          break label_4;
-        }
-        jj_consume_token(ASIGNACION);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case DECIMAL:
           jj_consume_token(DECIMAL);
           break;
-        case IDENTIFICADOR:
-          jj_consume_token(IDENTIFICADOR);
-          break;
-        default:
-          jj_la1[8] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
-      label_5:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case COMA:
-          ;
-          break;
-        default:
-          jj_la1[9] = jj_gen;
-          break label_5;
-        }
-        jj_consume_token(COMA);
-        jj_consume_token(IDENTIFICADOR);
-        jj_consume_token(ASIGNACION);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case DECIMAL:
-          jj_consume_token(DECIMAL);
-          break;
-        case IDENTIFICADOR:
-          jj_consume_token(IDENTIFICADOR);
-          break;
-        default:
-          jj_la1[10] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
-      jj_consume_token(DELIMITER);
-    } catch (ParseException e) {
-    System.out.println("Error sintactico, declaracion de decimal incorrecta en linea "  + e.currentToken.next.beginLine +
-    ", columna  " + e.currentToken.next.beginColumn );
-    }
-  }
-
-  static final public void DeclaracionBoolean() throws ParseException {
-    try {
-      jj_consume_token(BOOL);
-      jj_consume_token(IDENTIFICADOR);
-      label_6:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case ASIGNACION:
-          ;
-          break;
-        default:
-          jj_la1[11] = jj_gen;
-          break label_6;
-        }
-        jj_consume_token(ASIGNACION);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case TRUE:
           jj_consume_token(TRUE);
           break;
         case FALSE:
           jj_consume_token(FALSE);
           break;
+        case NULL:
+          jj_consume_token(NULL);
+          break;
+        case CADENA:
+          jj_consume_token(CADENA);
+          break;
+        case CHAR:
+          jj_consume_token(CHAR);
+          break;
+        default:
+          jj_la1[6] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        break;
+      case COMA:
+        jj_consume_token(COMA);
+        jj_consume_token(IDENTIFICADOR);
+        jj_consume_token(ASIGNACION);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IDENTIFICADOR:
+          jj_consume_token(IDENTIFICADOR);
+          break;
+        case NUMERO:
+          jj_consume_token(NUMERO);
+          break;
+        case DECIMAL:
+          jj_consume_token(DECIMAL);
+          break;
+        case TRUE:
+          jj_consume_token(TRUE);
+          break;
+        case FALSE:
+          jj_consume_token(FALSE);
+          break;
+        case NULL:
+          jj_consume_token(NULL);
+          break;
+        case CADENA:
+          jj_consume_token(CADENA);
+          break;
+        case CHAR:
+          jj_consume_token(CHAR);
+          break;
+        default:
+          jj_la1[7] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        break;
+      default:
+        jj_la1[8] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+    jj_consume_token(DELIMITER);
+  }
+
+  static final public void incrementoDecremento() throws ParseException {
+    jj_consume_token(IDENTIFICADOR);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case INCR:
+      jj_consume_token(INCR);
+      break;
+    case DECR:
+      jj_consume_token(DECR);
+      break;
+    default:
+      jj_la1[9] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    jj_consume_token(DELIMITER);
+  }
+
+  static final public void asignaciones() throws ParseException {
+    jj_consume_token(IDENTIFICADOR);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ASIGNACION:
+    case SUMAIGUAL:
+    case RESTAIGUAL:
+    case MULTIGUAL:
+    case DIVIDIRIGUAL:
+    case MODULOIGUAL:
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case ASIGNACION:
+        jj_consume_token(ASIGNACION);
+        break;
+      case SUMAIGUAL:
+        jj_consume_token(SUMAIGUAL);
+        break;
+      case RESTAIGUAL:
+        jj_consume_token(RESTAIGUAL);
+        break;
+      case MULTIGUAL:
+        jj_consume_token(MULTIGUAL);
+        break;
+      case DIVIDIRIGUAL:
+        jj_consume_token(DIVIDIRIGUAL);
+        break;
+      case MODULOIGUAL:
+        jj_consume_token(MODULOIGUAL);
+        break;
+      default:
+        jj_la1[10] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IDENTIFICADOR:
+        jj_consume_token(IDENTIFICADOR);
+        break;
+      case CHAR:
+        jj_consume_token(CHAR);
+        break;
+      case CADENA:
+        jj_consume_token(CADENA);
+        break;
+      case NUMERO:
+        jj_consume_token(NUMERO);
+        break;
+      case TRUE:
+        jj_consume_token(TRUE);
+        break;
+      case FALSE:
+        jj_consume_token(FALSE);
+        break;
+      case DECIMAL:
+        jj_consume_token(DECIMAL);
+        break;
+      default:
+        jj_la1[11] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      break;
+    default:
+      jj_la1[13] = jj_gen;
+      if (jj_2_2(3)) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case ASIGNACION:
+          jj_consume_token(ASIGNACION);
+          break;
+        case SUMAIGUAL:
+          jj_consume_token(SUMAIGUAL);
+          break;
+        case RESTAIGUAL:
+          jj_consume_token(RESTAIGUAL);
+          break;
+        case MULTIGUAL:
+          jj_consume_token(MULTIGUAL);
+          break;
+        case DIVIDIRIGUAL:
+          jj_consume_token(DIVIDIRIGUAL);
+          break;
+        case MODULOIGUAL:
+          jj_consume_token(MODULOIGUAL);
+          break;
         default:
           jj_la1[12] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
-      }
-      label_7:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case COMA:
-          ;
-          break;
-        default:
-          jj_la1[13] = jj_gen;
-          break label_7;
-        }
-        jj_consume_token(COMA);
-        jj_consume_token(IDENTIFICADOR);
-        jj_consume_token(ASIGNACION);
-        jj_consume_token(TRUE);
-        jj_consume_token(FALSE);
-      }
-      jj_consume_token(DELIMITER);
-    } catch (ParseException e) {
-    Token tok = new Token(43, "true");
-    if(tok == e.currentToken){
-    System.out.println("Se esperaba verdadero");
-    }
-    System.out.println("Error sintactico, declaracion de boolean incorrecta en linea "  + e.currentToken.next.beginLine +
-    ", columna  " + e.currentToken.next.beginColumn );
-    }
-  }
-
-  static final public void DeclaracionString() throws ParseException {
-    try {
-      jj_consume_token(STRING);
-      jj_consume_token(IDENTIFICADOR);
-      label_8:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case ASIGNACION:
-          ;
-          break;
-        default:
-          jj_la1[14] = jj_gen;
-          break label_8;
-        }
-        jj_consume_token(ASIGNACION);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case CADENA:
-          jj_consume_token(CADENA);
-          break;
-        case IDENTIFICADOR:
-          jj_consume_token(IDENTIFICADOR);
-          break;
-        default:
-          jj_la1[15] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
-      label_9:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case COMA:
-          ;
-          break;
-        default:
-          jj_la1[16] = jj_gen;
-          break label_9;
-        }
-        jj_consume_token(COMA);
-        jj_consume_token(IDENTIFICADOR);
-        jj_consume_token(ASIGNACION);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case CADENA:
-          jj_consume_token(CADENA);
-          break;
-        case IDENTIFICADOR:
-          jj_consume_token(IDENTIFICADOR);
-          break;
-        default:
-          jj_la1[17] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
-      jj_consume_token(DELIMITER);
-    } catch (ParseException e) {
-        System.out.println("Error sintactico, declaracion de STRING incorrecta en linea "  + e.currentToken.next.beginLine +
-        ", columna  " + e.currentToken.next.beginColumn );
-    }
-  }
-
-  static final public void DeclaracionChar() throws ParseException {
-    try {
-      jj_consume_token(CARACTER);
-      jj_consume_token(IDENTIFICADOR);
-      label_10:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case ASIGNACION:
-          ;
-          break;
-        default:
-          jj_la1[18] = jj_gen;
-          break label_10;
-        }
-        jj_consume_token(ASIGNACION);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case CHAR:
-          jj_consume_token(CHAR);
-          break;
-        case IDENTIFICADOR:
-          jj_consume_token(IDENTIFICADOR);
-          break;
-        default:
-          jj_la1[19] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
-      label_11:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case COMA:
-          ;
-          break;
-        default:
-          jj_la1[20] = jj_gen;
-          break label_11;
-        }
-        jj_consume_token(COMA);
-        jj_consume_token(IDENTIFICADOR);
-        jj_consume_token(ASIGNACION);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case CHAR:
-          jj_consume_token(CHAR);
-          break;
-        case IDENTIFICADOR:
-          jj_consume_token(IDENTIFICADOR);
-          break;
-        default:
-          jj_la1[21] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-      }
-      jj_consume_token(DELIMITER);
-    } catch (ParseException e) {
-        System.out.println("Error sintactico, declaracion de CHAR incorrecta en linea "  + e.currentToken.next.beginLine +
-        ", columna  " + e.currentToken.next.beginColumn );
-    }
-  }
-
-  static final public void Declaraciones() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case CARACTER:
-      DeclaracionChar();
-      break;
-    case STRING:
-      DeclaracionString();
-      break;
-    case BOOL:
-      DeclaracionBoolean();
-      break;
-    case FLOAT:
-      DeclaracionFloat();
-      break;
-    case INT:
-      DeclaracionInt();
-      break;
-    default:
-      jj_la1[22] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-  }
-
-  static final public void ComparacionLogica_Basica() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case IDENTIFICADOR:
-      jj_consume_token(IDENTIFICADOR);
-      break;
-    case NUMERO:
-      jj_consume_token(NUMERO);
-      break;
-    case DECIMAL:
-      jj_consume_token(DECIMAL);
-      break;
-    case CADENA:
-      jj_consume_token(CADENA);
-      break;
-    case CHAR:
-      jj_consume_token(CHAR);
-      break;
-    default:
-      jj_la1[23] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case IGUALDAD:
-      jj_consume_token(IGUALDAD);
-      break;
-    case MAYOR:
-      jj_consume_token(MAYOR);
-      break;
-    case MAYORI:
-      jj_consume_token(MAYORI);
-      break;
-    case MENOR:
-      jj_consume_token(MENOR);
-      break;
-    case MENORI:
-      jj_consume_token(MENORI);
-      break;
-    case DIFERENCIA:
-      jj_consume_token(DIFERENCIA);
-      break;
-    default:
-      jj_la1[24] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case IDENTIFICADOR:
-      jj_consume_token(IDENTIFICADOR);
-      break;
-    case NUMERO:
-      jj_consume_token(NUMERO);
-      break;
-    case DECIMAL:
-      jj_consume_token(DECIMAL);
-      break;
-    case CADENA:
-      jj_consume_token(CADENA);
-      break;
-    case CHAR:
-      jj_consume_token(CHAR);
-      break;
-    default:
-      jj_la1[25] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-  }
-
-  static final public void ComparacionLogica_Compleja() throws ParseException {
-    ComparacionLogica_Basica();
-    label_12:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case AND:
-      case OR:
-        ;
-        break;
-      default:
-        jj_la1[26] = jj_gen;
-        break label_12;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case AND:
-        jj_consume_token(AND);
-        break;
-      case OR:
-        jj_consume_token(OR);
-        break;
-      default:
-        jj_la1[27] = jj_gen;
+        jj_consume_token(NUMERO);
+        jj_consume_token(MAS);
+        jj_consume_token(NUMERO);
+      } else {
         jj_consume_token(-1);
         throw new ParseException();
       }
-      ComparacionLogica_Basica();
     }
+    jj_consume_token(DELIMITER);
   }
 
-  static final public void ComparacionLogica_Simple() throws ParseException {
+  static final public void ComparacionLogica() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NEGACION:
       jj_consume_token(NEGACION);
@@ -550,7 +428,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
         jj_consume_token(CHAR);
         break;
       default:
-        jj_la1[28] = jj_gen;
+        jj_la1[14] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -571,29 +449,99 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
       jj_consume_token(CHAR);
       break;
     default:
-      jj_la1[29] = jj_gen;
+      jj_la1[15] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-  }
-
-  static final public void ComparacionLogica() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case NEGACION:
-    case NUMERO:
-    case IDENTIFICADOR:
-    case DECIMAL:
-    case CADENA:
-    case CHAR:
-      ComparacionLogica_Simple();
-      break;
-    default:
-      jj_la1[30] = jj_gen;
-      if (jj_2_1(3)) {
-        ComparacionLogica_Basica();
-      } else if (jj_2_2(3)) {
-        ComparacionLogica_Compleja();
-      } else {
+    label_3:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IGUALDAD:
+      case MAYOR:
+      case MAYORI:
+      case MENOR:
+      case MENORI:
+      case DIFERENCIA:
+      case AND:
+      case OR:
+        ;
+        break;
+      default:
+        jj_la1[16] = jj_gen;
+        break label_3;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IGUALDAD:
+        jj_consume_token(IGUALDAD);
+        break;
+      case MAYOR:
+        jj_consume_token(MAYOR);
+        break;
+      case MAYORI:
+        jj_consume_token(MAYORI);
+        break;
+      case MENOR:
+        jj_consume_token(MENOR);
+        break;
+      case MENORI:
+        jj_consume_token(MENORI);
+        break;
+      case DIFERENCIA:
+        jj_consume_token(DIFERENCIA);
+        break;
+      case AND:
+        jj_consume_token(AND);
+        break;
+      case OR:
+        jj_consume_token(OR);
+        break;
+      default:
+        jj_la1[17] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case NEGACION:
+        jj_consume_token(NEGACION);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case IDENTIFICADOR:
+          jj_consume_token(IDENTIFICADOR);
+          break;
+        case NUMERO:
+          jj_consume_token(NUMERO);
+          break;
+        case DECIMAL:
+          jj_consume_token(DECIMAL);
+          break;
+        case CADENA:
+          jj_consume_token(CADENA);
+          break;
+        case CHAR:
+          jj_consume_token(CHAR);
+          break;
+        default:
+          jj_la1[18] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        break;
+      case IDENTIFICADOR:
+        jj_consume_token(IDENTIFICADOR);
+        break;
+      case NUMERO:
+        jj_consume_token(NUMERO);
+        break;
+      case DECIMAL:
+        jj_consume_token(DECIMAL);
+        break;
+      case CADENA:
+        jj_consume_token(CADENA);
+        break;
+      case CHAR:
+        jj_consume_token(CHAR);
+        break;
+      default:
+        jj_la1[19] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -606,7 +554,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
     ComparacionLogica();
     jj_consume_token(PARD);
     jj_consume_token(LLAVEI);
-    label_13:
+    label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case WRITE:
@@ -618,8 +566,8 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
         ;
         break;
       default:
-        jj_la1[31] = jj_gen;
-        break label_13;
+        jj_la1[20] = jj_gen;
+        break label_4;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case WRITE:
@@ -633,12 +581,102 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
         Declaraciones();
         break;
       default:
-        jj_la1[32] = jj_gen;
+        jj_la1[21] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
     }
     jj_consume_token(LLAVED);
+    label_5:
+    while (true) {
+      if (jj_2_3(2)) {
+        ;
+      } else {
+        break label_5;
+      }
+      jj_consume_token(ELSE);
+      jj_consume_token(IF);
+      jj_consume_token(PARI);
+      ComparacionLogica();
+      jj_consume_token(PARD);
+      jj_consume_token(LLAVEI);
+      label_6:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case WRITE:
+        case INT:
+        case FLOAT:
+        case STRING:
+        case BOOL:
+        case CARACTER:
+          ;
+          break;
+        default:
+          jj_la1[22] = jj_gen;
+          break label_6;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case WRITE:
+          Imprimir();
+          break;
+        case INT:
+        case FLOAT:
+        case STRING:
+        case BOOL:
+        case CARACTER:
+          Declaraciones();
+          break;
+        default:
+          jj_la1[23] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      }
+      jj_consume_token(LLAVED);
+    }
+    label_7:
+    while (true) {
+      if (jj_2_4(2)) {
+        ;
+      } else {
+        break label_7;
+      }
+      jj_consume_token(ELSE);
+      jj_consume_token(LLAVEI);
+      label_8:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case WRITE:
+        case INT:
+        case FLOAT:
+        case STRING:
+        case BOOL:
+        case CARACTER:
+          ;
+          break;
+        default:
+          jj_la1[24] = jj_gen;
+          break label_8;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case WRITE:
+          Imprimir();
+          break;
+        case INT:
+        case FLOAT:
+        case STRING:
+        case BOOL:
+        case CARACTER:
+          Declaraciones();
+          break;
+        default:
+          jj_la1[25] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      }
+      jj_consume_token(LLAVED);
+    }
   }
 
   static private boolean jj_2_1(int xla) {
@@ -655,68 +693,111 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3_2() {
-    if (jj_3R_15()) return true;
+  static private boolean jj_2_3(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_3(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(2, xla); }
+  }
+
+  static private boolean jj_2_4(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_4(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(3, xla); }
+  }
+
+  static private boolean jj_3_3() {
+    if (jj_scan_token(ELSE)) return true;
+    if (jj_scan_token(IF)) return true;
     return false;
   }
 
-  static private boolean jj_3R_15() {
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_14() {
+  static private boolean jj_3R_10() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(52)) {
+    if (jj_scan_token(1)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(51)) {
+    if (jj_scan_token(9)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(53)) {
+    if (jj_scan_token(10)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(54)) {
+    if (jj_scan_token(11)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(55)) return true;
-    }
-    }
-    }
-    }
-    xsp = jj_scanpos;
-    if (jj_scan_token(34)) {
+    if (jj_scan_token(12)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(35)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(36)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(37)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(38)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(39)) return true;
+    if (jj_scan_token(13)) return true;
     }
     }
     }
     }
     }
     xsp = jj_scanpos;
+    if (jj_scan_token(49)) {
+    jj_scanpos = xsp;
     if (jj_scan_token(52)) {
     jj_scanpos = xsp;
     if (jj_scan_token(51)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(53)) {
+    if (jj_scan_token(48)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(54)) {
+    if (jj_scan_token(40)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(55)) return true;
+    if (jj_scan_token(41)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(50)) return true;
     }
     }
     }
     }
+    }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_9() {
+    if (jj_scan_token(IDENTIFICADOR)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_10()) {
+    jj_scanpos = xsp;
+    if (jj_3_2()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3_4() {
+    if (jj_scan_token(ELSE)) return true;
+    if (jj_scan_token(LLAVEI)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_2() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(1)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(9)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(10)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(11)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(12)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(13)) return true;
+    }
+    }
+    }
+    }
+    }
+    if (jj_scan_token(NUMERO)) return true;
+    if (jj_scan_token(MAS)) return true;
     return false;
   }
 
   static private boolean jj_3_1() {
-    if (jj_3R_14()) return true;
+    if (jj_3R_9()) return true;
     return false;
   }
 
@@ -735,7 +816,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
   static private boolean jj_lookingAhead = false;
   static private boolean jj_semLA;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[33];
+  static final private int[] jj_la1 = new int[26];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -743,12 +824,12 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x50000,0x50000,0x0,0x2,0x0,0x40000000,0x0,0x2,0x0,0x40000000,0x0,0x2,0x0,0x40000000,0x2,0x0,0x40000000,0x0,0x2,0x0,0x40000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,};
+      jj_la1_0 = new int[] {0x68000,0x8000,0x60000,0x0,0x0,0x8000002,0x0,0x0,0x8000002,0xc0,0x3e02,0x0,0x3e02,0x3e02,0x0,0x0,0x80000000,0x80000000,0x0,0x0,0x8000,0x8000,0x8000,0x8000,0x8000,0x8000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x7c000,0x7c000,0x500000,0x0,0x180000,0x0,0x180000,0x0,0x300000,0x0,0x300000,0x0,0x1800,0x0,0x0,0x500000,0x0,0x500000,0x0,0x900000,0x0,0x900000,0x7c000,0xf80000,0xfc,0xf80000,0x600,0x600,0xf80000,0xf80100,0xf80100,0x7c000,0x7c000,};
+      jj_la1_1 = new int[] {0x2f800,0xf800,0x20000,0x1f0700,0xf800,0x0,0x1f0700,0x1f0700,0x0,0x0,0x0,0x1f0300,0x0,0x0,0x1f0000,0x1f0020,0xdf,0xdf,0x1f0000,0x1f0020,0xf800,0xf800,0xf800,0xf800,0xf800,0xf800,};
    }
-  static final private JJCalls[] jj_2_rtns = new JJCalls[2];
+  static final private JJCalls[] jj_2_rtns = new JJCalls[4];
   static private boolean jj_rescan = false;
   static private int jj_gc = 0;
 
@@ -770,7 +851,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -785,7 +866,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -803,7 +884,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -814,7 +895,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -831,7 +912,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -841,7 +922,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 33; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -956,12 +1037,12 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[62];
+    boolean[] la1tokens = new boolean[59];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 33; i++) {
+    for (int i = 0; i < 26; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -973,7 +1054,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
         }
       }
     }
-    for (int i = 0; i < 62; i++) {
+    for (int i = 0; i < 59; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -1000,7 +1081,7 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
 
   static private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 4; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -1009,6 +1090,8 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
           switch (i) {
             case 0: jj_3_1(); break;
             case 1: jj_3_2(); break;
+            case 2: jj_3_3(); break;
+            case 3: jj_3_4(); break;
           }
         }
         p = p.next;

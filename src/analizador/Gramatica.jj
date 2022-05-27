@@ -55,14 +55,14 @@ TOKEN :
 //PALABRAS RESERVADAS
 TOKEN : 
 {
-    <VOID : "vacio">          {System.out.println("(PR_VOID ---> " +  image + ")");}  //14
-    | <MAIN : "principal">    {System.out.println("(PR_MAIN ---> " +  image + ")");}  //15
+    //<VOID : "vacio">          {System.out.println("(PR_VOID ---> " +  image + ")");}  //14
+     <MAIN : "principal">    {System.out.println("(PR_MAIN ---> " +  image + ")");}  //15
     | <WRITE : "imprimir">    {System.out.println("(PR_IMPRIMIR ---> " +  image + ")");}  //16
     | <READ : "leer">         {System.out.println("(PR_LEER ---> " +  image + ")");}  //17
     | <IF : "cuando">         {System.out.println("(PR_IF ---> " +  image + ")");}  //18
     | <ELSE : "sino">           {System.out.println("(PR_ELSE ---> " +  image + ")");}//19
-    | <ELSEIF : "sino_cuando">  {System.out.println("(PR_ELSEIF ---> " +  image + ")");}//20
-    | <RETURN : "retorno">      {System.out.println("(PR_RETURN ---> " +  image + ")");}//21
+    //| <ELSEIF : "sino_cuando">  {System.out.println("(PR_ELSEIF ---> " +  image + ")");}//20
+    //| <RETURN : "retorno">      {System.out.println("(PR_RETURN ---> " +  image + ")");}//21
     | <BREAK : "romper">        {System.out.println("(PR_BREAK ---> " +  image + ")");}//22
     | <FOR : "ciclo_for">       {System.out.println("(PR_FOR ---> " +  image + ")");}//23
     | <WHILE : "ciclo_mientras">{System.out.println("(PR_WHILE ---> " +  image + ")");}//24
@@ -122,8 +122,7 @@ TOKEN :
     | <DECIMAL : (["0" - "9"])+["."](["0" - "9"])+>                 {System.out.println("(DECIMAL ---> " +  image + ")");}//53
     | <CADENA : "\""(~["\""])*"\"" > {System.out.println("(STRING ---> " +  image + ")");} //54
     | <CHAR : "\'"(~["\""])"\'" >     {System.out.println("(CHAR ---> " +  image + ")");} //55
-    | <DOSPUNTOS : ":">    {System.out.println("(DOSPUNTOS ---> " +  image + ")");} //56
-    
+    | <DOSPUNTOS : ":">    {System.out.println("(DOSPUNTOS ---> " +  image + ")");} //56  
 }
 
 
@@ -138,11 +137,58 @@ void Programa() :
 {}
 {
 try{
+
+
     <MAIN><PARI><PARD><LLAVEI> Bloque() <LLAVED><EOF>
+
+
+
 }catch(ParseException e){
-        System.out.println("\nError Sintactico (PROGRAMA) en linea " + e.currentToken.next.beginLine  + ", columna  " + e.currentToken.next.beginColumn + ".\n" +  
-    "Se encontro \"" + e.currentToken.next.toString() + "\", se esperaba " +  e.expectedTokenSequences[0][0] );
+        System.out.println("\nError Sintactico (PROGRAMA) ");
+
+    Token currentToken = e.currentToken;
+    int [][]expectedTokenSequences = e.expectedTokenSequences;
+    String[] tokenImage = e.tokenImage;
+    String eol = System.getProperty("line.separator", "\n");
+
+    StringBuffer expected = new StringBuffer();
+    int maxSize = 0;
+    for (int i = 0; i < expectedTokenSequences.length; i++) {
+      if (maxSize < expectedTokenSequences[i].length) {
+        maxSize = expectedTokenSequences[i].length;
+      }
+      for (int j = 0; j < expectedTokenSequences[i].length; j++) {
+        expected.append(tokenImage[expectedTokenSequences[i][j]]).append(' ');
+      }
+      if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
+        expected.append("...");
+      }
+      expected.append(eol).append("    ");
     }
+    String retval = "Se encontro \"";
+    Token tok = currentToken.next;
+    for (int i = 0; i < maxSize; i++) {
+      if (i != 0) retval += " ";
+      if (tok.kind == 0) {
+        retval += tokenImage[0];
+        break;
+      }
+      retval += " " + tokenImage[tok.kind];
+      retval += " \"";
+      //retval += add_escapes(tok.image);
+      //retval += " \"";
+      tok = tok.next; 
+    }
+    retval += "\" en la linea " + currentToken.next.beginLine + ", columna " + currentToken.next.beginColumn;
+    retval += "." + eol;
+    if (expectedTokenSequences.length == 1) {
+      retval += "Se esperaba:" + eol + "    ";
+    } else {
+      retval += "Se esperaba alguno de estos:" + eol + "    ";
+    }
+    retval += expected.toString();
+    System.out.println(retval);
+}
 }
 
 
@@ -153,17 +199,20 @@ try{
 (
     Imprimir()
     | Declaraciones()
+    | LOOKAHEAD(3)asignaciones()
+    | incrementoDecremento()
     | condicionalIf()
-)*
+    |   <ELSE>
+
+)*  
 
 }
 catch(ParseException e){
 
-System.out.println("\nError Sintactico (BLOQUE) en linea " + token.beginLine + ", columna  " + token.beginColumn + ".\n El token  \"" + token.image + 
-"\" no es reconocido por el lenguaje");
+System.out.println("\nError Sintactico (BLOQUE) en linea " + e.currentToken.next.beginLine + ", columna  " + e.currentToken.next.beginColumn);
 
 }catch(TokenMgrError a){
-System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  " + token.beginColumn + ".\n El token  \"" + token.image + 
+System.out.println("\nError Lexico en linea " + token.endLine  + ", columna  " + token.endColumn + ".\n El token  \"" + token.image + 
 "\" no es reconocido por el lenguaje");
 }
 
@@ -173,128 +222,115 @@ System.out.println("\nError Lexico en linea " + token.beginLine  + ", columna  "
 void Imprimir() :
 {}
 {
-try{
-    <WRITE><PARI>(<CADENA>|<IDENTIFICADOR>)<PARD><DELIMITER> 
-}catch(ParseException e){
-    System.out.println("Error sintactico xddd");
-}
+    <WRITE><PARI>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<TRUE>|<FALSE>|<NULL>|<CADENA>|<CHAR>)<PARD><DELIMITER> 
 }
 
 
-void DeclaracionInt() :
-{}
-{
-    try{
-        <INT><IDENTIFICADOR>(<ASIGNACION>(<NUMERO>|<IDENTIFICADOR>))*(<COMA><IDENTIFICADOR><ASIGNACION>(<NUMERO>|<IDENTIFICADOR>))*<DELIMITER>
-    }catch(ParseException e ){
-    System.out.println("Error sintactico, declaracion de entero incorrecta en linea "  + e.currentToken.next.beginLine + 
-    ", columna  " + e.currentToken.next.beginColumn );
-
-}
-}
-
-void DeclaracionFloat() :
-{}
-{
-    try{
-        <FLOAT><IDENTIFICADOR>(<ASIGNACION>(<DECIMAL>|<IDENTIFICADOR>))*(<COMA><IDENTIFICADOR><ASIGNACION>(<DECIMAL>|<IDENTIFICADOR>))*<DELIMITER>
-    }catch(ParseException e ){
-    System.out.println("Error sintactico, declaracion de decimal incorrecta en linea "  + e.currentToken.next.beginLine + 
-    ", columna  " + e.currentToken.next.beginColumn );
-
-}
-}
-
-
-void DeclaracionBoolean() :
-{}
-{
-    try{
-        <BOOL><IDENTIFICADOR>(<ASIGNACION>(<TRUE>|<FALSE>))*(<COMA><IDENTIFICADOR><ASIGNACION>(<TRUE><FALSE>))*<DELIMITER>
-    }catch(ParseException e ){
-
-    Token tok = new Token(43, "true");
-    if(tok == e.currentToken){
-    System.out.println("Se esperaba verdadero");
-    }
-    System.out.println("Error sintactico, declaracion de boolean incorrecta en linea "  + e.currentToken.next.beginLine + 
-    ", columna  " + e.currentToken.next.beginColumn );
-
-}
-}
-
-
-
-    void DeclaracionString() :
-    {}
-    {
-        try{
-            <STRING><IDENTIFICADOR>(<ASIGNACION>(<CADENA>|<IDENTIFICADOR>))*(<COMA><IDENTIFICADOR><ASIGNACION>(<CADENA>|<IDENTIFICADOR>))*<DELIMITER>
-        }catch(ParseException e ){
-        System.out.println("Error sintactico, declaracion de STRING incorrecta en linea "  + e.currentToken.next.beginLine + 
-        ", columna  " + e.currentToken.next.beginColumn );
-
-        }
-    }
-
-
-    void DeclaracionChar() :
-    {}
-    {
-        try{
-            <CARACTER><IDENTIFICADOR>(<ASIGNACION>(<CHAR>|<IDENTIFICADOR>))*(<COMA><IDENTIFICADOR><ASIGNACION>(<CHAR>|<IDENTIFICADOR>))*<DELIMITER>
-        }catch(ParseException e ){
-        System.out.println("Error sintactico, declaracion de CHAR incorrecta en linea "  + e.currentToken.next.beginLine + 
-        ", columna  " + e.currentToken.next.beginColumn );
-
-        }
-    }
 
     void Declaraciones() : 
     {}
-    {
-        DeclaracionChar()|DeclaracionString()|DeclaracionBoolean()|DeclaracionFloat()|DeclaracionInt()
+    {   
+        //TIPO DE DATO
+        (<INT>|<CARACTER>|<FLOAT>|<STRING>|<BOOL>)
+        
+        //IDENTIFICADOR
+        <IDENTIFICADOR>
+        
+        //SIMBOLO =
+        ((<ASIGNACION>
+
+        //VALOR
+        (<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<TRUE>|<FALSE>|<NULL>|<CADENA>|<CHAR>))
+
+        |
+        //Lo mismo pero con las comas
+        (<COMA><IDENTIFICADOR><ASIGNACION>
+        (<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<TRUE>|<FALSE>|<NULL>|<CADENA>|<CHAR>)))*
+
+        //DELIMITADOR;
+        <DELIMITER>
     }
 
 
-void ComparacionLogica_Basica() : 
-{}
+
+    void incrementoDecremento() : {}
+    {
+    //OPERANDO
+    (<IDENTIFICADOR>)
+
+    //OPERADOR
+    (<INCR>|<DECR>)
+
+    //DELIMITADOR
+    <DELIMITER>
+    }
+
+
+    void asignaciones() : {}
 {
-    (<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>)
-    (<IGUALDAD> | <MAYOR> | <MAYORI> | <MENOR> | <MENORI>
-    | <DIFERENCIA> 
-    )
-    (<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>)
+    //DESTINO
+    <IDENTIFICADOR>
+    
+    //OPERADOR DE ASIGNACION
+    (((<ASIGNACION>|<SUMAIGUAL>|<RESTAIGUAL>|<MULTIGUAL>|<DIVIDIRIGUAL>|<MODULOIGUAL>)
+
+    //VALOR DE LA ASIGNACION
+    (<IDENTIFICADOR>|<CHAR>|<CADENA>|<NUMERO>|<TRUE>|<FALSE>|<DECIMAL>))
+
+    |
+    LOOKAHEAD(3)
+    ((<ASIGNACION>|<SUMAIGUAL>|<RESTAIGUAL>|<MULTIGUAL>|<DIVIDIRIGUAL>|<MODULOIGUAL>)
+    (<NUMERO>(<MAS>)<NUMERO>)))
+
+    
+
+    //DELIMITADOR
+    <DELIMITER>
 }
 
 
-void ComparacionLogica_Compleja() : 
-{}
-{
-    ComparacionLogica_Basica()((<AND>|<OR>)(ComparacionLogica_Basica()))*
-}
 
-void ComparacionLogica_Simple() :
-{}
-{
-    (<NEGACION>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))|<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>
-}
+
 
 
 void ComparacionLogica() : 
 {}
 {
-    ComparacionLogica_Simple()|LOOKAHEAD(3)ComparacionLogica_Basica()|LOOKAHEAD(3)ComparacionLogica_Compleja()
+    //PRIMER TERMINO DEL IF
+    ((<NEGACION>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))|<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>)
+
+    //OPERADOR
+    ((<IGUALDAD> | <MAYOR> | <MAYORI> | <MENOR> | <MENORI>
+    | <DIFERENCIA> | <AND> | <OR>
+    )
+
+    //SEGUNDO TERMINO
+    ((<NEGACION>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))|<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))*
 }
+
 
 
     void condicionalIf() :
     {}
     {
         <IF><PARI>ComparacionLogica()<PARD><LLAVEI>(Imprimir()|Declaraciones())*<LLAVED>
+
+        //ELSEIF
+        (LOOKAHEAD(2)(<ELSE><IF><PARI>ComparacionLogica()<PARD><LLAVEI>(Imprimir()|Declaraciones())*<LLAVED>))*
+        (LOOKAHEAD(2)(<ELSE><LLAVEI>(Imprimir()|Declaraciones())*<LLAVED>))*
     }
 
 
+    void cicloFor() : {}
+    {
+    <FOR><PARI><IDENTIFICADOR><ASGNACION><NUMERO><DELIMITER><IDENTIFICADOR>
+    
+    //OPERADOR LOGICO
+    (<MENOR>|<MAYOR>|<MENORI>|<MAYORI>|<IGUALDAD>|<DIFERENCIA>)(<NUMERO>|<IDENTIFICADOR>)
 
+    //PASO
+    <>
+    <PARD>
 
+    }
 
