@@ -17,8 +17,8 @@ class Gramatica{
     //System.out.println("Ingresa el nombre del archivo que quieres ejecutar");
     //String str = entrada.next();
         try{
-            Gramatica analizador = new Gramatica(new BufferedReader(new FileReader("entrada2" + ".txt")));
-            analizador.Programa();
+            Gramatica analizador = new Gramatica(new BufferedReader(new FileReader("entrada1" + ".txt")));
+            analizador.Programa(); 
             System.out.println("\tEjecucion finalizada");
         }
         
@@ -133,101 +133,108 @@ SKIP :
 }
 
 
-void Programa() :
-{}
-{
-try{
+//----------------------------------------FIN DECLARACION TOKENS -------------------------------------------------------
+//----------------------------------------INICIO DECLARACION GRAMATICAS -------------------------------------------------------
 
 
-    <MAIN><PARI><PARD><LLAVEI> Bloque() <LLAVED><EOF>
+    
+//----------------------------------------PROGRAMA PRINCIPAL -------------------------------------------------------
+    void Programa() :{}
+    {
+        try{
+            <MAIN><PARI><PARD><LLAVEI> Bloque() <LLAVED><EOF>
+        }catch(ParseException e){
+            System.out.println("\nError Sintactico (PROGRAMA) ");
+            Token currentToken = e.currentToken;
+            int [][]expectedTokenSequences = e.expectedTokenSequences;
+            String[] tokenImage = e.tokenImage;
+            String eol = System.getProperty("line.separator", "\n");
 
-
-
-}catch(ParseException e){
-        System.out.println("\nError Sintactico (PROGRAMA) ");
-
-    Token currentToken = e.currentToken;
-    int [][]expectedTokenSequences = e.expectedTokenSequences;
-    String[] tokenImage = e.tokenImage;
-    String eol = System.getProperty("line.separator", "\n");
-
-    StringBuffer expected = new StringBuffer();
-    int maxSize = 0;
-    for (int i = 0; i < expectedTokenSequences.length; i++) {
-      if (maxSize < expectedTokenSequences[i].length) {
-        maxSize = expectedTokenSequences[i].length;
-      }
-      for (int j = 0; j < expectedTokenSequences[i].length; j++) {
-        expected.append(tokenImage[expectedTokenSequences[i][j]]).append(' ');
-      }
-      if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
-        expected.append("...");
-      }
-      expected.append(eol).append("    ");
+            StringBuffer expected = new StringBuffer();
+            int maxSize = 0;
+            for (int i = 0; i < expectedTokenSequences.length; i++) {
+                if (maxSize < expectedTokenSequences[i].length) {
+                    maxSize = expectedTokenSequences[i].length;
+                }
+                for (int j = 0; j < expectedTokenSequences[i].length; j++) {
+                    expected.append(tokenImage[expectedTokenSequences[i][j]]).append(' ');
+                }
+                if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
+                    expected.append("...");
+                }
+                expected.append(eol).append("    ");
+            }
+            String retval = "Se encontro \"";
+            Token tok = currentToken.next;
+            for (int i = 0; i < maxSize; i++) {
+                if (i != 0) retval += " ";
+                if (tok.kind == 0) {
+                    retval += tokenImage[0];
+                    break;
+                }
+                retval += " " + tokenImage[tok.kind];
+                retval += " \"";
+                //retval += add_escapes(tok.image);
+                //retval += " \"";
+                tok = tok.next; 
+            }
+            retval += "\" en la linea " + currentToken.next.beginLine + ", columna " + currentToken.next.beginColumn;
+            retval += "." + eol;
+            if (expectedTokenSequences.length == 1) {
+                retval += "Se esperaba:" + eol + "    ";
+            } else {
+                retval += "Se esperaba alguno de estos:" + eol + "    ";
+            }
+            retval += expected.toString();
+            System.out.println(retval);
+        }
     }
-    String retval = "Se encontro \"";
-    Token tok = currentToken.next;
-    for (int i = 0; i < maxSize; i++) {
-      if (i != 0) retval += " ";
-      if (tok.kind == 0) {
-        retval += tokenImage[0];
-        break;
-      }
-      retval += " " + tokenImage[tok.kind];
-      retval += " \"";
-      //retval += add_escapes(tok.image);
-      //retval += " \"";
-      tok = tok.next; 
+
+
+
+//----------------------------------------BLOQUE DE SENTENCIAS -------------------------------------------------------
+    void Bloque() : {}
+    {
+        try{
+        (
+            sentencia()
+        )*  
+        }catch(ParseException e){
+            System.out.println("\nError Sintactico (BLOQUE) en linea " 
+            + e.currentToken.next.beginLine + ", columna  " + e.currentToken.next.beginColumn);
+        }catch(TokenMgrError a){
+            System.out.println("\nError Lexico en linea " + token.endLine  + ", columna  " + token.endColumn + 
+            ".\n El token  \"" + token.image + 
+            "\" no es reconocido por el lenguaje");
+        }
     }
-    retval += "\" en la linea " + currentToken.next.beginLine + ", columna " + currentToken.next.beginColumn;
-    retval += "." + eol;
-    if (expectedTokenSequences.length == 1) {
-      retval += "Se esperaba:" + eol + "    ";
-    } else {
-      retval += "Se esperaba alguno de estos:" + eol + "    ";
+
+
+
+//----------------------------------------SENTENCIAS -------------------------------------------------------
+    void sentencia() : {}
+    {
+        imprimir()
+        | LOOKAHEAD(5)declaraciones()
+        | LOOKAHEAD(5)asignaciones()
+        | LOOKAHEAD(5)incrementoDecremento()
+        | condicionalIf()
+        | cicloFor()
+        | cicloWhile()
+        | leer()
+        | LOOKAHEAD(5)declaracionAritmetica()
+        | LOOKAHEAD(5)asignacionAritmetica()
     }
-    retval += expected.toString();
-    System.out.println(retval);
-}
-}
+
+//---------------------------------------- IMPRIMIR -------------------------------------------------------
+    void imprimir() :{}
+    {
+        <WRITE><PARI>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<TRUE>|<FALSE>|<NULL>|<CADENA>|<CHAR>)<PARD><DELIMITER> 
+    }
 
 
-void Bloque() : 
-{}
-{
-try{
-(
-    Imprimir()
-    | Declaraciones()
-    | LOOKAHEAD(3)asignaciones()
-    | incrementoDecremento()
-    | condicionalIf()
-    |   <ELSE>
-
-)*  
-
-}
-catch(ParseException e){
-
-System.out.println("\nError Sintactico (BLOQUE) en linea " + e.currentToken.next.beginLine + ", columna  " + e.currentToken.next.beginColumn);
-
-}catch(TokenMgrError a){
-System.out.println("\nError Lexico en linea " + token.endLine  + ", columna  " + token.endColumn + ".\n El token  \"" + token.image + 
-"\" no es reconocido por el lenguaje");
-}
-
-}
-
-
-void Imprimir() :
-{}
-{
-    <WRITE><PARI>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<TRUE>|<FALSE>|<NULL>|<CADENA>|<CHAR>)<PARD><DELIMITER> 
-}
-
-
-
-    void Declaraciones() : 
+//---------------------------------------- DECLARACIONES -------------------------------------------------------
+    void declaraciones() : 
     {}
     {   
         //TIPO DE DATO
@@ -252,85 +259,121 @@ void Imprimir() :
     }
 
 
+//---------------------------------------- DECLARACIONES CON OPERACIONES ARITMETICAS -------------------------------------------------------
+    void declaracionAritmetica() : {}
+    {
 
+        //TIPO DE DATO
+        (<INT>|<CARACTER>|<FLOAT>|<STRING>|<BOOL>)
+        
+        //IDENTIFICADOR
+        <IDENTIFICADOR>
+        
+        //SIMBOLO =
+        ((<ASIGNACION>operacion()<DELIMITER>))
+    }
+
+//----------------------------------------OPERACIONES ARITMETICAS-------------------------------------------------------
+    void operacion() : {}
+    {
+        <NUMERO>((<MAS>|<MENOS>|<MULTIPLICAR>|<DIVIDIR>|<MODULO>)<NUMERO>)*
+    }
+
+
+//---------------------------------------- ASIGNACIONES CON OPERACIONES ARITMETICAS -------------------------------------------------------
+    void asignacionAritmetica() : {}
+    {
+        <IDENTIFICADOR>(<ASIGNACION>|<SUMAIGUAL>|<RESTAIGUAL>|<MULTIGUAL>|<DIVIDIRIGUAL>|<MODULOIGUAL>)operacion()<DELIMITER>
+    }
+
+
+//----------------------------------------GRAMATICAS INCREMENTO O DECREMENTO -------------------------------------------------------
     void incrementoDecremento() : {}
     {
-    //OPERANDO
-    (<IDENTIFICADOR>)
+        //OPERANDO
+        (<IDENTIFICADOR>)
 
-    //OPERADOR
-    (<INCR>|<DECR>)
+        //OPERADOR
+        (<INCR>|<DECR>)
 
-    //DELIMITADOR
-    <DELIMITER>
+        //DELIMITADOR
+        <DELIMITER>
+    }
+
+//----------------------------------------ASIGNACIONES NORMALES -------------------------------------------------------
+    void asignaciones() : {}
+    {
+        //DESTINO
+        <IDENTIFICADOR>
+    
+        //OPERADOR DE ASIGNACION
+        (LOOKAHEAD(3)((<ASIGNACION>|<SUMAIGUAL>|<RESTAIGUAL>|<MULTIGUAL>|<DIVIDIRIGUAL>|<MODULOIGUAL>)
+
+        //VALOR DE LA ASIGNACION
+        (<IDENTIFICADOR>|<CHAR>|<CADENA>|<NUMERO>|<TRUE>|<FALSE>|<DECIMAL>))
+
+        |
+        //LOOKAHEAD(3)
+        ((<ASIGNACION>|<SUMAIGUAL>|<RESTAIGUAL>|<MULTIGUAL>|<DIVIDIRIGUAL>|<MODULOIGUAL>)
+        (<NUMERO>(<MAS>)<NUMERO>)))
+
+        //DELIMITADOR
+        <DELIMITER>
     }
 
 
-    void asignaciones() : {}
-{
-    //DESTINO
-    <IDENTIFICADOR>
-    
-    //OPERADOR DE ASIGNACION
-    (((<ASIGNACION>|<SUMAIGUAL>|<RESTAIGUAL>|<MULTIGUAL>|<DIVIDIRIGUAL>|<MODULOIGUAL>)
-
-    //VALOR DE LA ASIGNACION
-    (<IDENTIFICADOR>|<CHAR>|<CADENA>|<NUMERO>|<TRUE>|<FALSE>|<DECIMAL>))
-
-    |
-    LOOKAHEAD(3)
-    ((<ASIGNACION>|<SUMAIGUAL>|<RESTAIGUAL>|<MULTIGUAL>|<DIVIDIRIGUAL>|<MODULOIGUAL>)
-    (<NUMERO>(<MAS>)<NUMERO>)))
-
-    
-
-    //DELIMITADOR
-    <DELIMITER>
-}
-
-
-
-
-
-
-void ComparacionLogica() : 
-{}
-{
-    //PRIMER TERMINO DEL IF
-    ((<NEGACION>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))|<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>)
-
-    //OPERADOR
-    ((<IGUALDAD> | <MAYOR> | <MAYORI> | <MENOR> | <MENORI>
-    | <DIFERENCIA> | <AND> | <OR>
-    )
-
-    //SEGUNDO TERMINO
-    ((<NEGACION>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))|<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))*
-}
-
-
-
-    void condicionalIf() :
-    {}
+//----------------------------------------COMPARACION LOGICA -------------------------------------------------------
+    void comparacionLogica() : {}
     {
-        <IF><PARI>ComparacionLogica()<PARD><LLAVEI>(Imprimir()|Declaraciones())*<LLAVED>
+        //PRIMER TERMINO DEL IF
+        ((<NEGACION>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))|<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>)
+
+        //OPERADOR
+        ((<IGUALDAD> | <MAYOR> | <MAYORI> | <MENOR> | <MENORI>
+        | <DIFERENCIA> | <AND> | <OR>
+        )
+
+        //SEGUNDO TERMINO
+        ((<NEGACION>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))|<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))*
+    }
+
+
+//----------------------------------------ESTRUCTURA CONDICIONAL IF -------------------------------------------------------
+    void condicionalIf() :    {}
+    {
+        <IF><PARI>comparacionLogica()<PARD><LLAVEI>(imprimir()|declaraciones())*<LLAVED>
 
         //ELSEIF
-        (LOOKAHEAD(2)(<ELSE><IF><PARI>ComparacionLogica()<PARD><LLAVEI>(Imprimir()|Declaraciones())*<LLAVED>))*
-        (LOOKAHEAD(2)(<ELSE><LLAVEI>(Imprimir()|Declaraciones())*<LLAVED>))*
+        (LOOKAHEAD(2)(<ELSE><IF><PARI>comparacionLogica()<PARD><LLAVEI>(imprimir()|declaraciones())*<LLAVED>))*
+        (LOOKAHEAD(2)(<ELSE><LLAVEI>(imprimir()|declaraciones())*<LLAVED>))*
     }
 
-
+//---------------------------------------- ESTRUCTURA CICLO FOR -------------------------------------------------------
     void cicloFor() : {}
     {
-    <FOR><PARI><IDENTIFICADOR><ASGNACION><NUMERO><DELIMITER><IDENTIFICADOR>
+        try{
+            <FOR><PARI><IDENTIFICADOR><ASIGNACION><NUMERO><DELIMITER><IDENTIFICADOR>
     
-    //OPERADOR LOGICO
-    (<MENOR>|<MAYOR>|<MENORI>|<MAYORI>|<IGUALDAD>|<DIFERENCIA>)(<NUMERO>|<IDENTIFICADOR>)
+            //OPERADOR LOGICO
+            (<MENOR>|<MAYOR>|<MENORI>|<MAYORI>|<IGUALDAD>|<DIFERENCIA>)(<NUMERO>|<IDENTIFICADOR>)<DELIMITER>
 
-    //PASO
-    <>
-    <PARD>
-
+            //PASO
+            <IDENTIFICADOR>(<INCR>|<DECR>)
+            <PARD><LLAVEI>(imprimir()|declaraciones())*(<BREAK><DELIMITER>)*<LLAVED>
+        }catch(ParseException e){
+            System.out.println("\nError Sintactico (PROGRAMA) ");
+        }
     }
 
+
+//----------------------------------------ESTRUCTURA CICLO WHILE -------------------------------------------------------
+    void cicloWhile() : {}
+    {
+        <WHILE><PARI>comparacionLogica()<PARD><LLAVEI>(sentencia())*(<BREAK><DELIMITER>)*<LLAVED>
+    }
+
+//----------------------------------------LEER DATOS DESDE TECLADO -------------------------------------------------------
+    void leer() : {}
+    {
+        <READ><PARI><IDENTIFICADOR><PARD><DELIMITER>
+    }
