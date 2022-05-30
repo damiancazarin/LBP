@@ -7,34 +7,180 @@ import java.io.Reader;
 
 class Gramatica implements GramaticaConstants {
 
-    static int errores = 0;
-    static boolean bandera = false;
-    public static void main(String[] args )  throws FileNotFoundException {
-try{
-        String errorMsj = "";
-        Scanner entrada = new Scanner(System.in);
-        System.out.println("Ingresa el nombre del archivo que quieres ejecutar");
-        String str = entrada.next();
-        Gramatica analizador = new Gramatica(new BufferedReader(new FileReader(str + ".txt")));
-        analizador.Programa();
-        if(errores==0){
-            System.out.println("\tEjecucion finalizada sin errores");
-        }else{
-            System.out.println("\tLa ejecucion finalizo con " + errores + " errores");
-            System.out.println(errorMsj);
+  static int numeroErrores = 0;
+        static boolean flag = false;
+        public static void main(String[] args) throws ParseException{
+                try{
+                Gramatica analizador = new Gramatica(new BufferedReader(new FileReader("entrada2" + ".txt")));
+
+
+                String salidaError = "";
+                salidaError = analizador.Inicio(salidaError);
+                if(salidaError==""){
+                        System.out.println("Analizador: Todo correcto!");
+                }else{
+                        System.out.println("Analizador: Se han encontrado errores en el analisis");
+                        System.out.println("Numero de erroress: "+numeroErrores);
+                        System.out.println(salidaError);
+                    }
+                }catch(FileNotFoundException e){
+                System.out.println("nomeimporta");
+                }
         }
-}catch(ParseException e){
-    if(e.currentToken.next.kind != EOF){
-    errores++;
-    System.out.println(errores);
-    }
-}catch(TokenMgrError a){
-errores++;
-System.out.println(errores);
 
-}
+        private static String salidaError(Token currentToken, int[][] expectedTokenSequences, String[] tokenImage, String tipo){
+                String eol = System.getProperty("line.separator", "\n");
+                StringBuffer expected = new StringBuffer();
+                int maxSize = 0;
+                String retval = "";
+                for (int i = 0; i < expectedTokenSequences.length; i++) {
+                        if (maxSize < expectedTokenSequences[i].length) {
+                                maxSize = expectedTokenSequences[i].length;
+                        }
+                        for (int j = 0; j < expectedTokenSequences[i].length; j++) {
+                                expected.append(tokenImage[expectedTokenSequences[i][j]]).append(' ');
+                        }
+                        if (expectedTokenSequences[i][expectedTokenSequences[i].length - 1] != 0) {
+                                expected.append("...");
+                        }
+                        expected.append(eol).append("    ");
+                }
 
-    }
+                if(tipo.equals("sintactico")){
+                        numeroErrores++;
+                        retval += "Analizador: Ha ocurrido un error sintactico\n";
+                        retval += "Se encontro: ";
+                        Token tok = currentToken.next;
+                        for (int i = 0; i < maxSize; i++) {
+                                if (i != 0){
+                                retval += " ";
+                                }
+                                if (tok.kind == 0) {
+                                        retval += tokenImage[0];
+                                        break;
+                                }
+                                retval += " " + tokenImage[tok.kind];
+                                tok = tok.next;
+                        }
+                        //int linea = currentToken.next.beginLine + 1;
+                        retval += " en la linea: " + currentToken.next.beginLine + ", columna: " + currentToken.next.beginColumn;
+                        retval += eol;
+                        if (expectedTokenSequences.length == 1) {
+                                retval += "Esperaba: " + eol + "    ";
+                        } else {
+                                retval += "Esperaba uno de estos:" + eol + "    ";
+                        }
+                                retval += expected.toString();
+                        return retval;
+                }
+                if(tipo.equals("lexico")){
+                        numeroErrores++;
+                        retval +="Analizador: Ha ocurrido un error lexico\n";
+                        retval += "Se encontro: ";
+                        Token tok = currentToken.next;
+                        for (int i = 0; i < maxSize; i++) {
+                                if (i != 0){
+                                        retval += " ";
+                                }
+                                if (tok.kind == 0) {
+                                        retval += tokenImage[0];
+                                        break;
+                                }
+                                retval += add_escapes(tok.image);
+                                tok = tok.next;
+                        }
+                        retval += " en la linea: " + currentToken.next.beginLine + ", columna: " + currentToken.next.beginColumn;
+                        retval += eol;
+                        return retval;
+                }
+                return "";
+        }
+
+        private String Inicio(String err){
+                try{
+                        if(flag == true){
+                                Bloque();
+                        }else if(flag == false){
+                                Programa();
+                        }
+                }catch(ParseException e){
+                        boolean errorLexico = true;
+                        flag = true;
+
+                        for(int i=0;i<tokenImage.length;i++){
+                                if(tokenImage[e.currentToken.next.kind]==tokenImage[i]&&tokenImage[e.currentToken.next.kind]!=tokenImage[ERRORES]){
+                                        errorLexico=false;
+                                }
+                        }
+
+                        Token t=e.currentToken;
+                        while(t!=null && t.next!=null){
+                                t = getNextToken();
+                                if(t.next==null){
+                                        break;
+                                }
+                        }
+
+                        if(errorLexico){
+                                err +=salidaError(e.currentToken, e.expectedTokenSequences, e.tokenImage, "lexico");
+                        }else{
+                                err +=salidaError(e.currentToken, e.expectedTokenSequences, e.tokenImage, "sintactico");
+                        }
+
+                        if(token.kind != EOF){
+                                err=Inicio(err);
+                        }
+                }catch(TokenMgrError ex){
+                        err +=ex.getMessage();
+                }
+                return err;
+        }
+
+
+      static String add_escapes(String str) {
+      StringBuffer retval = new StringBuffer();
+      char ch;
+      for (int i = 0; i < str.length(); i++) {
+        switch (str.charAt(i))
+        {
+           case 0 :
+              continue;
+           case '\b':
+              retval.append("\\b");
+              continue;
+           case '\t':
+              retval.append("\\t");
+              continue;
+           case '\n':
+              retval.append("\\n");
+              continue;
+           case '\f':
+              retval.append("\\f");
+              continue;
+           case '\r':
+              retval.append("\\r");
+              continue;
+           case '\"':
+              retval.append("\\\"");
+              continue;
+           case '\'':
+              retval.append("\\\'");
+              continue;
+           case '\\':
+              retval.append("\\\\");
+              continue;
+           default:
+              if ((ch = str.charAt(i)) < 0x20 || ch > 0x7e) {
+                 String s = "0000" + Integer.toString(ch, 16);
+                 retval.append("\\u" + s.substring(s.length() - 4, s.length()));
+              } else {
+                 retval.append(ch);
+              }
+              continue;
+        }
+      }
+      return retval.toString();
+   }
 
 //----------------------------------------FIN DECLARACION TOKENS -------------------------------------------------------
 //----------------------------------------INICIO DECLARACION GRAMATICAS -------------------------------------------------------
@@ -989,6 +1135,51 @@ System.out.println(errores);
     finally { jj_save(7, xla); }
   }
 
+  static private boolean jj_3_5() {
+    if (jj_3R_18()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_4() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_20() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(6)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(14)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(15)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(16)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(17)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(18)) return true;
+    }
+    }
+    }
+    }
+    }
+    if (jj_scan_token(NUMERO)) return true;
+    if (jj_scan_token(MAS)) return true;
+    if (jj_scan_token(NUMERO)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_3() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_2() {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
   static private boolean jj_3_6() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1028,6 +1219,11 @@ System.out.println(errores);
     }
     }
     }
+    return false;
+  }
+
+  static private boolean jj_3_1() {
+    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -1213,56 +1409,6 @@ System.out.println(errores);
       if (jj_3R_19()) { jj_scanpos = xsp; break; }
     }
     if (jj_scan_token(DELIMITER)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_5() {
-    if (jj_3R_18()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_4() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_3() {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_20() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(6)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(14)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(15)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(16)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(17)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(18)) return true;
-    }
-    }
-    }
-    }
-    }
-    if (jj_scan_token(NUMERO)) return true;
-    if (jj_scan_token(MAS)) return true;
-    if (jj_scan_token(NUMERO)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_2() {
-    if (jj_3R_15()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_1() {
-    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -1502,7 +1648,7 @@ System.out.println(errores);
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[57];
+    boolean[] la1tokens = new boolean[58];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1519,7 +1665,7 @@ System.out.println(errores);
         }
       }
     }
-    for (int i = 0; i < 57; i++) {
+    for (int i = 0; i < 58; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

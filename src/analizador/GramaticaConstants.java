@@ -110,6 +110,8 @@ public interface GramaticaConstants {
   int CADENA = 55;
   /** RegularExpression Id. */
   int CHAR = 56;
+  /** RegularExpression Id. */
+  int ERRORES = 57;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -173,6 +175,7 @@ public interface GramaticaConstants {
     "<DECIMAL>",
     "<CADENA>",
     "<CHAR>",
+    "<ERRORES>",
   };
 
 }
