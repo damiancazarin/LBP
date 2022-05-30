@@ -1,5 +1,5 @@
 principal(){
-entero a;
+enteroa;
 entero b = 3;
 entero c = 4  , d = 5;
 flotante dec = 1.0;
@@ -9,6 +9,7 @@ cadena chain = "holaq ase";
 caracter hois = 'a';
 imprimir("hola mundo");
 a = 6;
+a = 5+6-4;
 a++;
 e--;
 cuando(a40){
@@ -18,6 +19,19 @@ entero pachi;
 } sino {
 	imprimir("chupame el mion");
 
+}
+
+ciclo_for(i = 4; i < 3; i++){
+
+	entero tres = 3;
+	romper;
+
+}
+
+ciclo_mientras(a<5){
+
+	leer(t);
+	romper;
 }
 
 

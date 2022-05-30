@@ -9,111 +9,107 @@ public interface GramaticaConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int ASIGNACION = 1;
+  int ASIGNACION = 6;
   /** RegularExpression Id. */
-  int MAS = 2;
+  int MAS = 7;
   /** RegularExpression Id. */
-  int MENOS = 3;
+  int MENOS = 8;
   /** RegularExpression Id. */
-  int MULTIPLICAR = 4;
+  int MULTIPLICAR = 9;
   /** RegularExpression Id. */
-  int DIVIDIR = 5;
+  int DIVIDIR = 10;
   /** RegularExpression Id. */
-  int INCR = 6;
+  int INCR = 11;
   /** RegularExpression Id. */
-  int DECR = 7;
+  int DECR = 12;
   /** RegularExpression Id. */
-  int MODULO = 8;
+  int MODULO = 13;
   /** RegularExpression Id. */
-  int SUMAIGUAL = 9;
+  int SUMAIGUAL = 14;
   /** RegularExpression Id. */
-  int RESTAIGUAL = 10;
+  int RESTAIGUAL = 15;
   /** RegularExpression Id. */
-  int MULTIGUAL = 11;
+  int MULTIGUAL = 16;
   /** RegularExpression Id. */
-  int DIVIDIRIGUAL = 12;
+  int DIVIDIRIGUAL = 17;
   /** RegularExpression Id. */
-  int MODULOIGUAL = 13;
+  int MODULOIGUAL = 18;
   /** RegularExpression Id. */
-  int MAIN = 14;
+  int MAIN = 19;
   /** RegularExpression Id. */
-  int WRITE = 15;
+  int WRITE = 20;
   /** RegularExpression Id. */
-  int READ = 16;
+  int READ = 21;
   /** RegularExpression Id. */
-  int IF = 17;
+  int IF = 22;
   /** RegularExpression Id. */
-  int ELSE = 18;
+  int ELSE = 23;
   /** RegularExpression Id. */
-  int BREAK = 19;
+  int BREAK = 24;
   /** RegularExpression Id. */
-  int FOR = 20;
+  int FOR = 25;
   /** RegularExpression Id. */
-  int WHILE = 21;
+  int WHILE = 26;
   /** RegularExpression Id. */
-  int PARI = 22;
+  int PARI = 27;
   /** RegularExpression Id. */
-  int PARD = 23;
+  int PARD = 28;
   /** RegularExpression Id. */
-  int LLAVEI = 24;
+  int LLAVEI = 29;
   /** RegularExpression Id. */
-  int LLAVED = 25;
+  int LLAVED = 30;
   /** RegularExpression Id. */
-  int DELIMITER = 26;
+  int DELIMITER = 31;
   /** RegularExpression Id. */
-  int COMA = 27;
+  int COMA = 32;
   /** RegularExpression Id. */
-  int COMILLA = 28;
+  int COMILLA = 33;
   /** RegularExpression Id. */
-  int COMENTARIO = 29;
+  int COMENTARIO = 34;
   /** RegularExpression Id. */
-  int PUNTO = 30;
+  int IGUALDAD = 35;
   /** RegularExpression Id. */
-  int IGUALDAD = 31;
+  int MAYOR = 36;
   /** RegularExpression Id. */
-  int MAYOR = 32;
+  int MAYORI = 37;
   /** RegularExpression Id. */
-  int MAYORI = 33;
+  int MENOR = 38;
   /** RegularExpression Id. */
-  int MENOR = 34;
+  int MENORI = 39;
   /** RegularExpression Id. */
-  int MENORI = 35;
+  int DIFERENCIA = 40;
   /** RegularExpression Id. */
-  int DIFERENCIA = 36;
+  int NEGACION = 41;
   /** RegularExpression Id. */
-  int NEGACION = 37;
+  int AND = 42;
   /** RegularExpression Id. */
-  int AND = 38;
+  int OR = 43;
   /** RegularExpression Id. */
-  int OR = 39;
+  int TRUE = 44;
   /** RegularExpression Id. */
-  int TRUE = 40;
+  int FALSE = 45;
   /** RegularExpression Id. */
-  int FALSE = 41;
+  int NULL = 46;
   /** RegularExpression Id. */
-  int NULL = 42;
+  int INT = 47;
   /** RegularExpression Id. */
-  int INT = 43;
+  int FLOAT = 48;
   /** RegularExpression Id. */
-  int FLOAT = 44;
+  int STRING = 49;
   /** RegularExpression Id. */
-  int STRING = 45;
+  int BOOL = 50;
   /** RegularExpression Id. */
-  int BOOL = 46;
+  int CARACTER = 51;
   /** RegularExpression Id. */
-  int CARACTER = 47;
+  int NUMERO = 52;
   /** RegularExpression Id. */
-  int NUMERO = 48;
+  int IDENTIFICADOR = 53;
   /** RegularExpression Id. */
-  int IDENTIFICADOR = 49;
+  int DECIMAL = 54;
   /** RegularExpression Id. */
-  int DECIMAL = 50;
+  int CADENA = 55;
   /** RegularExpression Id. */
-  int CADENA = 51;
-  /** RegularExpression Id. */
-  int CHAR = 52;
-  /** RegularExpression Id. */
-  int DOSPUNTOS = 53;
+  int CHAR = 56;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -121,6 +117,11 @@ public interface GramaticaConstants {
   /** Literal token values. */
   String[] tokenImage = {
     "<EOF>",
+    "\" \"",
+    "\"\\n\"",
+    "\"\\r\"",
+    "\"\\r\\n\"",
+    "\"\\t\"",
     "\"=\"",
     "\"+\"",
     "\"-\"",
@@ -150,7 +151,6 @@ public interface GramaticaConstants {
     "\",\"",
     "\"\\\"\"",
     "\"#\"",
-    "\".\"",
     "\"==\"",
     "\">\"",
     "\">=\"",
@@ -173,12 +173,6 @@ public interface GramaticaConstants {
     "<DECIMAL>",
     "<CADENA>",
     "<CHAR>",
-    "\":\"",
-    "\" \"",
-    "\"\\n\"",
-    "\"\\r\"",
-    "\"\\r\\n\"",
-    "\"\\t\"",
   };
 
 }
