@@ -1,6 +1,7 @@
 options{
     
     LOOKAHEAD=1;
+   
 }
 
 
@@ -308,7 +309,7 @@ TOKEN :
     | <DECIMAL : (["0" - "9"])+["."](["0" - "9"])+>                 {System.out.println("(DECIMAL ---> " +  image + ")");}//53
     | <CADENA : "\""(~["\""])*"\"" > {System.out.println("(STRING ---> " +  image + ")");} //54
     | <CHAR : "\'"(~["\""])"\'" >     {System.out.println("(CHAR ---> " +  image + ")");} //55
-    | <ERRORES : ~[]>   {System.out.println("(ERROR ---> " +  image + ")");} //58
+       | <ERRORES : ~[]>   {System.out.println("(ERROR ---> " +  image + ")");} //58
     
 }
 
@@ -355,6 +356,7 @@ TOKEN :
     
         try{
         imprimir()
+        |errorLexico()
         |LOOKAHEAD(2)declaraciones()
         |LOOKAHEAD(1)asignaciones()   //Asignacion IDENTIFICADOR = (VALOR | IDENFITICADOR) DELIMITER
         |LOOKAHEAD(2)incrementoDecremento()
@@ -372,7 +374,7 @@ TOKEN :
         
          do {      
        t = getNextToken();
-       if(t.kind== EOF)break;
+     
        
          } while (t!=null && t.kind != EOF );
     }
@@ -561,6 +563,7 @@ TOKEN :
     void cicloFor() : {}
     {
       
+        try{
             <FOR><PARI><IDENTIFICADOR><IGUAL><NUMERO>delimiter()<IDENTIFICADOR>
     
             //OPERADOR LOGICO
@@ -569,7 +572,17 @@ TOKEN :
             //PASO
             <IDENTIFICADOR>(<MAS><MAS>|<MENOS><MENOS>)
             <PARD><LLAVEI>(sentencia())*<LLAVED>
+        }catch (ParseException e) {
+  
+        Token t;    
+        System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
+        System.out.println("");
+         do {
         
+       t = getNextToken();
+        
+         } while (t!=null && t.kind != EOF  );
+    }
     }
 
 
@@ -619,5 +632,27 @@ TOKEN :
     }
     }
 
+
+    void errorLexico() :
+    {}
+    {
+
+    <ERRORES> {
+               error();
+            }
+
+   
+    }
+    
+    JAVACODE
+
+    
+    public void error(){
+    
+    errores++;
+    
+    System.out.println("\nSe ha encontrado un error lexico \"" + token.image+"\" en la linea "+token.beginLine
+    +" columna "+token.beginColumn+"\n");
+    }
 
     
