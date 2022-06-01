@@ -54,12 +54,12 @@ class Gramatica{
     }catch (ParseException e) {
   
         Token t;
-       
+              System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
       
          do {
        t = getNextToken();
        if(t.kind== EOF)break;
-        System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
+ 
          } while (t!=null && t.kind != EOF  );
     }
 
@@ -103,7 +103,12 @@ static String errorData(Token currentTokenVal,
       expected.append(eol).append("    ");
     }
     
-    errores++;
+    String str0 = "";
+    
+    if(currentToken.next.kind == 0) return str0;
+
+    
+    
     String retval = "";
 
     if(currentToken.next.kind == 56){
@@ -131,6 +136,7 @@ static String errorData(Token currentTokenVal,
         
          
     }else{
+    errores++;
     retval+="\n\nError Sintactico, ";
     retval += "Se ha encontrado \"";
     Token tok = currentToken.next;
@@ -353,7 +359,7 @@ TOKEN :
         |LOOKAHEAD(1)asignaciones()   //Asignacion IDENTIFICADOR = (VALOR | IDENFITICADOR) DELIMITER
         |LOOKAHEAD(2)incrementoDecremento()
         | condicionalIf()
-        | cicloFor()
+        | LOOKAHEAD(2)cicloFor()
         | (<BREAK>delimiter())
         | cicloWhile()
         | leer()
@@ -363,8 +369,11 @@ TOKEN :
         Token t;
         System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
         System.out.println("");
-         do {
+        
+         do {      
        t = getNextToken();
+       if(t.kind== EOF)break;
+       
          } while (t!=null && t.kind != EOF );
     }
 
@@ -379,12 +388,13 @@ TOKEN :
          <WRITE><PARI>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<TRUE>|<FALSE>|<NULL>|<CADENA>|<CHAR>)<PARD> delimiter()
         }catch (ParseException e) {
   
-        Token t;
+        Token t; 
         System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
         System.out.println("");
          do {
        t = getNextToken();
-        if(t.kind== EOF)break;
+     
+      
          } while (t!=null && t.kind != EOF  );
     }
      
@@ -435,7 +445,7 @@ TOKEN :
 //----------------------------------------OPERACIONES ARITMETICAS-------------------------------------------------------
     void operacion() : {}
     {
-        <NUMERO>((<MAS>|<MENOS>|<MULTIPLICAR>|<DIVIDIR>|<MODULO>)<NUMERO>)*
+       ( <NUMERO> | <IDENTIFICADOR> | <DECIMAL>)((<MAS>|<MENOS>|<MULTIPLICAR>|<DIVIDIR>|<MODULO>)(<NUMERO>|<IDENTIFICADOR>|<DECIMAL>))*
     }
 
 
@@ -495,6 +505,8 @@ TOKEN :
 //----------------------------------------COMPARACION LOGICA -------------------------------------------------------
     void comparacionLogica() : {}
     {
+
+        try{
         //PRIMER TERMINO DEL IF
         ((<NEGACION>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))|<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>)
 
@@ -505,18 +517,45 @@ TOKEN :
 
         //SEGUNDO TERMINO
         ((<NEGACION>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))|<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<CADENA>|<CHAR>))*
+        }catch (ParseException e) {
+  
+        Token t; 
+        System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
+        System.out.println("");
+         do {
+       t = getNextToken();
+        
+        
+         } while (t!=null && t.kind != EOF  );
     }
+
+}
 
 
 //----------------------------------------ESTRUCTURA CONDICIONAL IF -------------------------------------------------------
     void condicionalIf() :    {}
     {
+
+        try{
         <IF><PARI>comparacionLogica()<PARD><LLAVEI>(sentencia())*<LLAVED>
 
         //ELSEIF
         (LOOKAHEAD(2)(<ELSE><IF><PARI>comparacionLogica()<PARD><LLAVEI>(sentencia())*<LLAVED>))*
         (LOOKAHEAD(2)(<ELSE><LLAVEI>(sentencia())*<LLAVED>))*
+        }catch (ParseException e) {
+  
+        Token t;    
+        System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
+        System.out.println("");
+         do {
+        
+       t = getNextToken();
+        
+         } while (t!=null && t.kind != EOF  );
     }
+        
+
+}
 
 //---------------------------------------- ESTRUCTURA CICLO FOR -------------------------------------------------------
     void cicloFor() : {}
