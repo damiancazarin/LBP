@@ -34,6 +34,7 @@ class Gramatica{
 
     static void inicio(String str,FileReader file, BufferedReader buffer,Gramatica analizador)throws FileNotFoundException {
     
+    
     try{
                
         analizador.Programa();
@@ -50,14 +51,31 @@ class Gramatica{
  
           else System.out.println("Ejecucion finalizada con " +errores + " errores");
         
-    }catch(ParseException e){ 
-             
-               
-            }
-         
-
-    
+    }catch (ParseException e) {
+  
+        Token t;
+       
+      
+         do {
+       t = getNextToken();
+       if(t.kind== EOF)break;
+        System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
+         } while (t!=null && t.kind != EOF  );
     }
+
+    if(errores ==0){
+            System.out.println("Ejecucion finalizada sin errores");
+        }
+
+        else if(errores == 1 ){
+        
+            System.out.println("Ejecucion finalizada con 1 error");
+
+        }
+ 
+          else System.out.println("Ejecucion finalizada con " +errores + " errores");
+
+}
 
 
   
@@ -88,7 +106,8 @@ static String errorData(Token currentTokenVal,
     errores++;
     String retval = "";
 
-    if(currentToken.next.kind == 58){
+    if(currentToken.next.kind == 56){
+        errores++;
         retval+="\n\nError Lexico, ";
         retval += "Se ha encontrado \"";
         Token tok = currentToken.next;
@@ -208,7 +227,6 @@ TOKEN :
     |<MENOS : "-">      {System.out.println("(OP_Menos ---> " +  image + ")");}        //3
     |<MULTIPLICAR : "*">{System.out.println("(OP_Multiplicar ---> " +  image + ")");}        //4 
     |<DIVIDIR : "/">    {System.out.println("(OP_Division --->" +  image + ")");}        //5
-  
     |<MODULO : "%">        {System.out.println("(OP_Modulo ---> " +  image + ")");}     //8
     |<SUMAIGUAL : "+=">    {System.out.println("(OP_SumaAsignacion ---> " +  image + ")");}     //9
     |<RESTAIGUAL : "-=">   {System.out.println("(OP_RestaAsignacion ---> " +  image + ")");}     //10
@@ -284,7 +302,7 @@ TOKEN :
     | <DECIMAL : (["0" - "9"])+["."](["0" - "9"])+>                 {System.out.println("(DECIMAL ---> " +  image + ")");}//53
     | <CADENA : "\""(~["\""])*"\"" > {System.out.println("(STRING ---> " +  image + ")");} //54
     | <CHAR : "\'"(~["\""])"\'" >     {System.out.println("(CHAR ---> " +  image + ")");} //55
-    | <ERRORES : ~[]>
+    | <ERRORES : ~[]>   {System.out.println("(ERROR ---> " +  image + ")");} //58
     
 }
 
@@ -301,7 +319,7 @@ TOKEN :
     void Programa() :{}
     {
         
-            <MAIN><PARI><PARD><LLAVEI> Bloque() <LLAVED><EOF>
+            <MAIN><PARI><PARD><LLAVEI> Bloque() <LLAVED> <EOF>
         
     }
 
@@ -336,10 +354,11 @@ TOKEN :
         |LOOKAHEAD(2)incrementoDecremento()
         | condicionalIf()
         | cicloFor()
+        | (<BREAK>delimiter())
         | cicloWhile()
         | leer()
         | LOOKAHEAD(2)declaracionAritmetica()
-        | LOOKAHEAD(2)asignacionAritmetica()
+        | LOOKAHEAD(2)asignacionAritmetica()        
        }catch (ParseException e) {
         Token t;
         System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
@@ -365,10 +384,8 @@ TOKEN :
         System.out.println("");
          do {
        t = getNextToken();
-         } while (t.kind!=WRITE &&  t.kind!=PARI && t.kind!=PARD && t.kind!=NUMERO 
-        && t.kind!=DECIMAL && t.kind!= TRUE && t.kind!=FALSE && t.kind!=NULL && t.kind!=CADENA 
-        && t.kind!=CHAR &&   t.kind != IDENTIFICADOR && t!=null && t.kind != EOF && t.kind!=DELIMITER
-        && t.kind!=STRING );
+        if(t.kind== EOF)break;
+         } while (t!=null && t.kind != EOF  );
     }
      
 }
@@ -469,9 +486,7 @@ TOKEN :
         System.out.println("");
          do {
        t = getNextToken();
-         } while (t.kind!=ASIGN && t.kind!=IGUAL && t.kind!=NUMERO 
-        && t.kind!=DECIMAL && t.kind!= TRUE && t.kind!=FALSE && t.kind!=NULL && t.kind!=CADENA 
-        && t.kind!=CHAR &&   t.kind != IDENTIFICADOR && t!=null && t.kind != EOF && t.kind!=DELIMITER );
+         } while ( t!=null && t.kind != EOF);
     }
      
 }   
@@ -496,11 +511,11 @@ TOKEN :
 //----------------------------------------ESTRUCTURA CONDICIONAL IF -------------------------------------------------------
     void condicionalIf() :    {}
     {
-        <IF><PARI>comparacionLogica()<PARD><LLAVEI>(imprimir()|declaraciones())*<LLAVED>
+        <IF><PARI>comparacionLogica()<PARD><LLAVEI>(sentencia())*<LLAVED>
 
         //ELSEIF
-        (LOOKAHEAD(2)(<ELSE><IF><PARI>comparacionLogica()<PARD><LLAVEI>(imprimir()|declaraciones())*<LLAVED>))*
-        (LOOKAHEAD(2)(<ELSE><LLAVEI>(imprimir()|declaraciones())*<LLAVED>))*
+        (LOOKAHEAD(2)(<ELSE><IF><PARI>comparacionLogica()<PARD><LLAVEI>(sentencia())*<LLAVED>))*
+        (LOOKAHEAD(2)(<ELSE><LLAVEI>(sentencia())*<LLAVED>))*
     }
 
 //---------------------------------------- ESTRUCTURA CICLO FOR -------------------------------------------------------
@@ -514,7 +529,7 @@ TOKEN :
 
             //PASO
             <IDENTIFICADOR>(<MAS><MAS>|<MENOS><MENOS>)
-            <PARD><LLAVEI>(imprimir()|declaraciones())*(<BREAK>delimiter())*<LLAVED>
+            <PARD><LLAVEI>(sentencia())*<LLAVED>
         
     }
 
@@ -522,15 +537,15 @@ TOKEN :
 //----------------------------------------ESTRUCTURA CICLO WHILE -------------------------------------------------------
     void cicloWhile() : {}
     {
-        <WHILE><PARI>comparacionLogica()<PARD><LLAVEI>(sentencia())*(<BREAK>delimiter())*<LLAVED>
+        <WHILE><PARI>comparacionLogica()<PARD><LLAVEI>(sentencia())*<LLAVED>
     }
 
 //----------------------------------------LEER DATOS DESDE TECLADO -------------------------------------------------------
     void leer() : {}
     {
         <READ><PARI><IDENTIFICADOR><PARD>delimiter()
-    }
-
+    
+}
 
      void delimiter() :
     {}
@@ -538,8 +553,7 @@ TOKEN :
     try 
     {
     <DELIMITER> 
-    } catch (ParseException e) {
-        errores++;
+    } catch (ParseException e) {        
         Token t;
         System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
         System.out.println("");
@@ -549,7 +563,22 @@ TOKEN :
     }
     }
 
-   
 
-   
+    void eof() :
+    {}
+    {
+    try 
+    {
+    <EOF> 
+    } catch (ParseException e) {        
+        Token t;
+        System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
+        System.out.println("");
+         do {
+       t = getNextToken();
+         } while ( t!=null );
+    }
+    }
+
+
     
