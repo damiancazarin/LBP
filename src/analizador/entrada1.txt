@@ -1,13 +1,27 @@
 principal(){
 
- entero a = 6 + 8;
-entero v = 8-7;
-cadena accc = "hola q ase"$;
-flotante s = 4.3, k = 9.3;
-a = 5;
-s += ll;
-flotante por = 4/3;
-cadena a = 33*6+5+4;
-a += 4+4;
+ entero numero;
+ entero i;
+ entero resultado;	
+
+ imprimir ("Programa para tablas de multiplicar")
+  imprimir ("Ingresa un número para mostrar sus multiplicaciones");
+
+ $
+ 
+ leer(numero);
+
+   &
+
+ ciclo_for(i = 1; i<= numero;i++){
+
+	resultado += numero*i;
+	imprimir(resultado);
+
+	}
+ 	
+	 leer(numero)
 }    
+
+
 

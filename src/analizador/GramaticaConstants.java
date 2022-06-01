@@ -9,7 +9,7 @@ public interface GramaticaConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int ASIGNACION = 6;
+  int IGUAL = 6;
   /** RegularExpression Id. */
   int MAS = 7;
   /** RegularExpression Id. */
@@ -19,99 +19,97 @@ public interface GramaticaConstants {
   /** RegularExpression Id. */
   int DIVIDIR = 10;
   /** RegularExpression Id. */
-  int INCR = 11;
+  int MODULO = 11;
   /** RegularExpression Id. */
-  int DECR = 12;
+  int SUMAIGUAL = 12;
   /** RegularExpression Id. */
-  int MODULO = 13;
+  int RESTAIGUAL = 13;
   /** RegularExpression Id. */
-  int SUMAIGUAL = 14;
+  int MULTIGUAL = 14;
   /** RegularExpression Id. */
-  int RESTAIGUAL = 15;
+  int DIVIDIRIGUAL = 15;
   /** RegularExpression Id. */
-  int MULTIGUAL = 16;
+  int MODULOIGUAL = 16;
   /** RegularExpression Id. */
-  int DIVIDIRIGUAL = 17;
+  int MAIN = 17;
   /** RegularExpression Id. */
-  int MODULOIGUAL = 18;
+  int WRITE = 18;
   /** RegularExpression Id. */
-  int MAIN = 19;
+  int READ = 19;
   /** RegularExpression Id. */
-  int WRITE = 20;
+  int IF = 20;
   /** RegularExpression Id. */
-  int READ = 21;
+  int ELSE = 21;
   /** RegularExpression Id. */
-  int IF = 22;
+  int BREAK = 22;
   /** RegularExpression Id. */
-  int ELSE = 23;
+  int FOR = 23;
   /** RegularExpression Id. */
-  int BREAK = 24;
+  int WHILE = 24;
   /** RegularExpression Id. */
-  int FOR = 25;
+  int ASIGN = 25;
   /** RegularExpression Id. */
-  int WHILE = 26;
+  int PARI = 26;
   /** RegularExpression Id. */
-  int PARI = 27;
+  int PARD = 27;
   /** RegularExpression Id. */
-  int PARD = 28;
+  int LLAVEI = 28;
   /** RegularExpression Id. */
-  int LLAVEI = 29;
+  int LLAVED = 29;
   /** RegularExpression Id. */
-  int LLAVED = 30;
+  int DELIMITER = 30;
   /** RegularExpression Id. */
-  int DELIMITER = 31;
+  int COMA = 31;
   /** RegularExpression Id. */
-  int COMA = 32;
+  int COMILLA = 32;
   /** RegularExpression Id. */
-  int COMILLA = 33;
+  int COMENTARIO = 33;
   /** RegularExpression Id. */
-  int COMENTARIO = 34;
+  int IGUALDAD = 34;
   /** RegularExpression Id. */
-  int IGUALDAD = 35;
+  int MAYOR = 35;
   /** RegularExpression Id. */
-  int MAYOR = 36;
+  int MAYORI = 36;
   /** RegularExpression Id. */
-  int MAYORI = 37;
+  int MENOR = 37;
   /** RegularExpression Id. */
-  int MENOR = 38;
+  int MENORI = 38;
   /** RegularExpression Id. */
-  int MENORI = 39;
+  int DIFERENCIA = 39;
   /** RegularExpression Id. */
-  int DIFERENCIA = 40;
+  int NEGACION = 40;
   /** RegularExpression Id. */
-  int NEGACION = 41;
+  int AND = 41;
   /** RegularExpression Id. */
-  int AND = 42;
+  int OR = 42;
   /** RegularExpression Id. */
-  int OR = 43;
+  int TRUE = 43;
   /** RegularExpression Id. */
-  int TRUE = 44;
+  int FALSE = 44;
   /** RegularExpression Id. */
-  int FALSE = 45;
+  int NULL = 45;
   /** RegularExpression Id. */
-  int NULL = 46;
+  int INT = 46;
   /** RegularExpression Id. */
-  int INT = 47;
+  int FLOAT = 47;
   /** RegularExpression Id. */
-  int FLOAT = 48;
+  int STRING = 48;
   /** RegularExpression Id. */
-  int STRING = 49;
+  int BOOL = 49;
   /** RegularExpression Id. */
-  int BOOL = 50;
+  int CARACTER = 50;
   /** RegularExpression Id. */
-  int CARACTER = 51;
+  int NUMERO = 51;
   /** RegularExpression Id. */
-  int NUMERO = 52;
+  int IDENTIFICADOR = 52;
   /** RegularExpression Id. */
-  int IDENTIFICADOR = 53;
+  int DECIMAL = 53;
   /** RegularExpression Id. */
-  int DECIMAL = 54;
+  int CADENA = 54;
   /** RegularExpression Id. */
-  int CADENA = 55;
+  int CHAR = 55;
   /** RegularExpression Id. */
-  int CHAR = 56;
-  /** RegularExpression Id. */
-  int ERRORES = 57;
+  int ERRORES = 56;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -129,8 +127,6 @@ public interface GramaticaConstants {
     "\"-\"",
     "\"*\"",
     "\"/\"",
-    "\"++\"",
-    "\"--\"",
     "\"%\"",
     "\"+=\"",
     "\"-=\"",
@@ -145,6 +141,7 @@ public interface GramaticaConstants {
     "\"romper\"",
     "\"ciclo_for\"",
     "\"ciclo_mientras\"",
+    "\"asignacion\"",
     "\"(\"",
     "\")\"",
     "\"{\"",

@@ -16,7 +16,7 @@ import java.io.Reader;
 class Gramatica{
 
     static int errores = 0;
-   
+    static boolean yaimpreso = false;
     public static void main(String[] args )  throws FileNotFoundException {
         
     System.out.println("Ingresa el nombre del archivo que quieres analizar");
@@ -40,17 +40,25 @@ class Gramatica{
                
         analizador.Programa();
         
+
+        if(!yaimpreso){
+        
         if(errores ==0){
             System.out.println("Ejecucion finalizada sin errores");
+            yaimpreso=true;
         }
 
         else if(errores == 1 ){
         
             System.out.println("Ejecucion finalizada con 1 error");
-
+            yaimpreso=true;
         }
  
-          else System.out.println("Ejecucion finalizada con " +errores + " errores");
+          else {
+            yaimpreso=true;
+            System.out.println("Ejecucion finalizada con " +errores + " errores");
+                }
+}
         
     }catch (ParseException e) {
   
@@ -64,17 +72,25 @@ class Gramatica{
          } while (t!=null && t.kind != EOF  );
     }
 
-    if(errores ==0){
+     if(!yaimpreso){
+        
+        if(errores ==0){
             System.out.println("Ejecucion finalizada sin errores");
+            yaimpreso=true;
         }
 
         else if(errores == 1 ){
         
             System.out.println("Ejecucion finalizada con 1 error");
-
+            yaimpreso=true;
         }
  
-          else System.out.println("Ejecucion finalizada con " +errores + " errores");
+          else {
+            yaimpreso=true;
+            System.out.println("Ejecucion finalizada con " +errores + " errores");
+                }
+}
+
 
 }
 
@@ -656,3 +672,10 @@ TOKEN :
     }
 
     
+
+    
+
+   
+
+   
+ 

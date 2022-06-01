@@ -1,39 +1,45 @@
+
 principal(){
-entero a;
-entero b = 3;
-entero c = 4;
-entero d = 5;
-flotante dec = 1.0;
-bool boli = verdadero; 
-bool Bbalu2 = falso;
-cadena chain = "holaq ase";
-caracter hois = 'a';
-imprimir("hola mundo");
-a = 6;
-a = 5+6-4; 
-a++;
-e--;
-cuando(a40){
-entero pachi;
-} sino cuando (a<3){
-	imprimir("nalgona");
-} sino {
-	imprimir("chupame el mion");
+
+cadena nombrePersona;
+entero edad;
+bool mayor;
+
+imprimir("Ingresa tu nombre");
+leer(nombrePersona);
+
+imprimir ("Ingresa tu edad");
+leer(edad);
+
+	asignacion mayor = 3;
+
+
+cuando(mayor>12){
+	
+	asignacion mayor = verdadero;
 
 }
 
-ciclo_for(i = 4; i < 3; i++){
+sino{
 
-	entero tres = 3;
-	romper;
+	asignacion imprimir = 3;
+
 
 }
 
-ciclo_mientras(a<5){
 
-	leer(t);
-	romper;
+cuando(mayor){
+
+	imprimir("Eres mayor de edad");
+
 }
+
+sino {
+
+	imprimir("Eres menor de edad");
+
+}
+
 
 
 }

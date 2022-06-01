@@ -1,1 +1,16 @@
-Hola "amigo"  () {} ___
+principal(){
+
+
+imprimir("Programa que imprime numeros mientras sean menores que 100");	
+
+flotante numero = 0;
+
+ciclo_mientras(numero<100){
+
+imprimir(numero);
+numero+;
+}
+
+imprimir("Programa terminado");	
+	
+}
