@@ -54,13 +54,15 @@ class Gramatica{
              
                
             }
+         
+
     
     }
 
 
   
 
-    static String errorData(Token currentTokenVal,
+static String errorData(Token currentTokenVal,
                         int[][] expectedTokenSequencesVal,
                         String[] tokenImageVal){
 
@@ -82,7 +84,36 @@ class Gramatica{
       }
       expected.append(eol).append("    ");
     }
-    String retval = "Se ha encontrado \"";
+    
+    errores++;
+    String retval = "";
+
+    if(currentToken.next.kind == 58){
+        retval+="\n\nError Lexico, ";
+        retval += "Se ha encontrado \"";
+        Token tok = currentToken.next;
+        for (int i = 0; i < maxSize; i++) {
+        if (i != 0) retval += " ";
+        if (tok.kind == 0) {
+            retval += tokenImage[0];
+            break;
+        }
+        //retval += " " + tokenImage[tok.kind];
+        //retval += " \"";
+        retval += add_escapes(tok.image);
+        retval += "\"";
+        tok = tok.next; 
+        }
+    retval += " en la linea " + currentToken.next.beginLine + ", columna " + currentToken.next.beginColumn;
+    retval += "." + eol;
+    
+    retval += "El token no es reconocido por el lenguaje";
+    return retval;
+        
+         
+    }else{
+    retval+="\n\nError Sintactico, ";
+    retval += "Se ha encontrado \"";
     Token tok = currentToken.next;
     for (int i = 0; i < maxSize; i++) {
       if (i != 0) retval += " ";
@@ -105,6 +136,8 @@ class Gramatica{
     }
     retval += expected.toString();
     return retval;
+    }
+   
   }
 
 
@@ -175,8 +208,7 @@ TOKEN :
     |<MENOS : "-">      {System.out.println("(OP_Menos ---> " +  image + ")");}        //3
     |<MULTIPLICAR : "*">{System.out.println("(OP_Multiplicar ---> " +  image + ")");}        //4 
     |<DIVIDIR : "/">    {System.out.println("(OP_Division --->" +  image + ")");}        //5
-    |<INCR : "++">      {System.out.println("(OP_Incremento ---> " +  image + ")");}        //6
-    |<DECR : "--">      {System.out.println("(OP_Decremento ---> " +  image + ")");}        //7
+  
     |<MODULO : "%">        {System.out.println("(OP_Modulo ---> " +  image + ")");}     //8
     |<SUMAIGUAL : "+=">    {System.out.println("(OP_SumaAsignacion ---> " +  image + ")");}     //9
     |<RESTAIGUAL : "-=">   {System.out.println("(OP_RestaAsignacion ---> " +  image + ")");}     //10
@@ -253,6 +285,7 @@ TOKEN :
     | <CADENA : "\""(~["\""])*"\"" > {System.out.println("(STRING ---> " +  image + ")");} //54
     | <CHAR : "\'"(~["\""])"\'" >     {System.out.println("(CHAR ---> " +  image + ")");} //55
     | <ERRORES : ~[]>
+    
 }
 
 
@@ -295,9 +328,11 @@ TOKEN :
 //----------------------------------------SENTENCIAS -------------------------------------------------------
     void sentencia() : {}
     {
+    
+        try{
         imprimir()
         |LOOKAHEAD(2)declaraciones()
-        |LOOKAHEAD(2)asignaciones()   //Asignacion IDENTIFICADOR = (VALOR | IDENFITICADOR) DELIMITER
+        |LOOKAHEAD(1)asignaciones()   //Asignacion IDENTIFICADOR = (VALOR | IDENFITICADOR) DELIMITER
         |LOOKAHEAD(2)incrementoDecremento()
         | condicionalIf()
         | cicloFor()
@@ -305,6 +340,15 @@ TOKEN :
         | leer()
         | LOOKAHEAD(2)declaracionAritmetica()
         | LOOKAHEAD(2)asignacionAritmetica()
+       }catch (ParseException e) {
+        Token t;
+        System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
+        System.out.println("");
+         do {
+       t = getNextToken();
+         } while (t!=null && t.kind != EOF );
+    }
+
     }
 
 //---------------------------------------- IMPRIMIR -------------------------------------------------------
@@ -315,7 +359,7 @@ TOKEN :
         try{
          <WRITE><PARI>(<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<TRUE>|<FALSE>|<NULL>|<CADENA>|<CHAR>)<PARD> delimiter()
         }catch (ParseException e) {
-        errores++;
+  
         Token t;
         System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
         System.out.println("");
@@ -388,14 +432,24 @@ TOKEN :
 //----------------------------------------GRAMATICAS INCREMENTO O DECREMENTO -------------------------------------------------------
     void incrementoDecremento() : {}
     {
+    try{
         //OPERANDO
         (<IDENTIFICADOR>)
 
         //OPERADOR
-        (<INCR>|<DECR>)
+        (<MAS><MAS>|<MENOS><MENOS>)
 
         //DELIMITADOR
         delimiter()
+        }catch(ParseException e){
+            Token t;
+            System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
+            System.out.println("");
+            do {
+                t = getNextToken();
+            } while (t.kind!=IDENTIFICADOR && t.kind!=MAS && t.kind!=MENOS 
+            && t.kind!=DELIMITER && t.kind!=NULL && t.kind != EOF  );
+        }
     }
 
 //----------------------------------------ASIGNACIONES NORMALES -------------------------------------------------------
@@ -403,9 +457,13 @@ TOKEN :
     {
         //PALABRA RESERVADA       
         try{
-        <ASIGN> <IDENTIFICADOR> <IGUAL> (<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<TRUE>|<FALSE>|<NULL>|<CADENA>|<CHAR>) delimiter()
+         <ASIGN> <IDENTIFICADOR> <IGUAL> 
+
+
+        (<IDENTIFICADOR>|<NUMERO>|<DECIMAL>|<TRUE>|<FALSE>|<NULL>|<CADENA>|<CHAR>) delimiter()
+        
         }catch (ParseException e) {
-        errores++;
+       
         Token t;
         System.out.println(errorData(e.currentToken,e.expectedTokenSequences,e.tokenImage));
         System.out.println("");
@@ -455,7 +513,7 @@ TOKEN :
             (<MENOR>|<MAYOR>|<MENORI>|<MAYORI>|<IGUALDAD>|<DIFERENCIA>)(<NUMERO>|<IDENTIFICADOR>)delimiter()
 
             //PASO
-            <IDENTIFICADOR>(<INCR>|<DECR>)
+            <IDENTIFICADOR>(<MAS><MAS>|<MENOS><MENOS>)
             <PARD><LLAVEI>(imprimir()|declaraciones())*(<BREAK>delimiter())*<LLAVED>
         
     }
@@ -492,3 +550,6 @@ TOKEN :
     }
 
    
+
+   
+    
